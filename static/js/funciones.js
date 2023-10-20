@@ -17,6 +17,7 @@ const pageAccessedByReload = (
 );
 
 function inicializarFiltros() {
+	setFechaIncidencia();
 	// Si se marca un colormap que se desmarquen los demás colormap
 	[...document.querySelectorAll('.checkboxColormap')].forEach(function(checkboxColormap) {
 		checkboxColormap.addEventListener('change', (event) => {
@@ -267,11 +268,9 @@ function setFechaIncidencia() {
 	if (dia < 10) dia = '0' + dia;
 	if (mes < 10) mes = '0' + mes;
 	const diaActualF = año + '-' + mes + '-' + dia;
-	const diaMin = año + '-' + mes + '-01';
 
 	document.getElementById('fechaIncidencia').value = diaActualF;
 	document.getElementById('fechaIncidencia').max = diaActualF;
-	document.getElementById('fechaIncidencia').min = diaMin;
 }
 
 function mostrarPopupAñadirIndicador() {

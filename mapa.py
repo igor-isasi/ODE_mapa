@@ -157,74 +157,15 @@ class Mapa:
                                 name='colormap').add_to(mapa)
         
         # Crear y añadir colormap de los grupos de indicadores
-        data = {'lugar': [], 'dato': []}
         if colormapInd['colormapIndEconomia']:
-            for mun in rankingColormapGeneral:
-                for munGeojson in self.geojson['features']:
-                    if munGeojson['properties']['iz_ofizial'] == mun['lugar']:
-                        munGeojson['properties']['points'] = mun['points']
-                data['lugar'].append(mun['lugar'])
-                data['dato'].append(mun['points'])
-            df = pandas.DataFrame(data)
-            colormap = branca.colormap.LinearColormap(
-                        colors=['red', 'orange','yellow', 'green'],
-                        vmin=df.min()['dato'],
-                        vmax=df.max()['dato'],
-                        caption='Puntuación de los indicadores del grupo Economía/Competitividad'
-                    ).add_to(mapa)
-            st_f = lambda x: {'fillColor': colormap(int(x['properties']['points'])), 'weight': 2, 'fillOpacity': 0.5}
-            geojson_fields.append('points')
-            geojson_aliases.append('Puntuación del grupo Economía/Competitividad')
-                    
-            folium.GeoJson(self.geojson,
-                            style_function=st_f,
-                            tooltip=folium.features.GeoJsonTooltip(fields=geojson_fields, aliases=geojson_aliases),
-                            name='colormap').add_to(mapa)
-            
+            myCaption = 'Puntuación del grupo Economía/Competitividad'
+            self.__generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases)          
         elif colormapInd['colormapIndCohesion']:
-            for mun in rankingColormapGeneral:
-                for munGeojson in self.geojson['features']:
-                    if munGeojson['properties']['iz_ofizial'] == mun['lugar']:
-                        munGeojson['properties']['points'] = mun['points']
-                data['lugar'].append(mun['lugar'])
-                data['dato'].append(mun['points'])
-            df = pandas.DataFrame(data)
-            colormap = branca.colormap.LinearColormap(
-                        colors=['red', 'orange','yellow', 'green'],
-                        vmin=df.min()['dato'],
-                        vmax=df.max()['dato'],
-                        caption='Puntuación de los indicadores del grupo Cohesión social/Calidad de vida'
-                    ).add_to(mapa)     
-            st_f = lambda x: {'fillColor': colormap(int(x['properties']['points'])), 'weight': 2, 'fillOpacity': 0.5} 
-            geojson_fields.append('points')
-            geojson_aliases.append('Puntuación del grupo Cohesión social/Calidad de vida')
-            folium.GeoJson(self.geojson,
-                            style_function=st_f,
-                            tooltip=folium.features.GeoJsonTooltip(fields=geojson_fields, aliases=geojson_aliases),
-                            name='colormap').add_to(mapa)
-
+            myCaption = 'Puntuación del grupo Cohesión social/Calidad de vida'
+            self.__generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases)
         elif colormapInd['colormapIndMedioambiente']:
-            for mun in rankingColormapGeneral:
-                for munGeojson in self.geojson['features']:
-                    if munGeojson['properties']['iz_ofizial'] == mun['lugar']:
-                        munGeojson['properties']['points'] = mun['points']
-                data['lugar'].append(mun['lugar'])
-                data['dato'].append(mun['points'])
-            df = pandas.DataFrame(data)
-            colormap = branca.colormap.LinearColormap(
-                        colors=['red', 'orange','yellow', 'green'],
-                        vmin=df.min()['dato'],
-                        vmax=df.max()['dato'],
-                        caption='Puntuación de los indicadores del grupo Medioambiente y Movilidad'
-                    ).add_to(mapa)
-            st_f= lambda x: {'fillColor': colormap(int(x['properties']['points'])), 'weight': 2, 'fillOpacity': 0.5}
-            geojson_fields.append('points')
-            geojson_aliases.append('Puntuación del grupo Medioambiente y Movilidad')
-            folium.GeoJson(self.geojson,
-                            style_function=st_f,
-                            tooltip=folium.features.GeoJsonTooltip(fields=geojson_fields, aliases=geojson_aliases),
-                            name='colormap').add_to(mapa)
-                   
+            myCaption = 'Puntuación del grupo Medioambiente y Movilidad'
+            self.__generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases)
 
     def __generarEventosTrafico(self, mapa, filtros, fechaIncidencia):
         myIFrame = None
@@ -236,8 +177,6 @@ class Mapa:
             for jsonCamara in listaJsonCamaras:
                 for camara in jsonCamara['cameras']:
                     if float(camara['latitude']) < 45 and float(camara['longitude']) < 0:
-                        #myIFrame = folium.IFrame('<strong>Latitud:</strong> ' + camara['latitud'] + '<br><br>' + '<strong>Longitud:</strong> ' + camara['longitud'])
-                        #myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
                         myIcon = folium.Icon(color='red', icon='video-camera', prefix='fa')
                         folium.Marker(location=[camara['latitude'], camara['longitude']], icon = myIcon).add_to(fg_camaras)
             fg_camaras.add_to(mapa)
@@ -333,6 +272,30 @@ class Mapa:
             fg_otros = folium.FeatureGroup(name='otros')
             self.__añadirEventos(jsonEventos, fg_otros)
             fg_otros.add_to(mapa)
+
+    def __generarColormapGrupo(self, mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases):
+        data = {'lugar': [], 'dato': []}
+        for mun in rankingColormapGeneral:
+                for munGeojson in self.geojson['features']:
+                    if munGeojson['properties']['iz_ofizial'] == mun['lugar']:
+                        munGeojson['properties']['points'] = mun['points']
+                data['lugar'].append(mun['lugar'])
+                data['dato'].append(mun['points'])
+        df = pandas.DataFrame(data)
+        colormap = branca.colormap.LinearColormap(
+                        colors=['red', 'orange','yellow', 'green'],
+                        vmin=df.min()['dato'],
+                        vmax=df.max()['dato'],
+                        caption=myCaption
+                    ).add_to(mapa)
+        st_f = lambda x: {'fillColor': colormap(int(x['properties']['points'])), 'weight': 2, 'fillOpacity': 0.5}
+        geojson_fields.append('points')
+        geojson_aliases.append(myCaption)
+                
+        folium.GeoJson(self.geojson,
+                            style_function=st_f,
+                            tooltip=folium.features.GeoJsonTooltip(fields=geojson_fields, aliases=geojson_aliases),
+                            name='colormap').add_to(mapa)
 
     def __añadirEventos(self, jsonEventos, fg):
         myIFrame = None
