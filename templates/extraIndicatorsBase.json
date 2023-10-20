@@ -1,0 +1,10 @@
+{
+    "32": ["Economía / Competitividad", "Población de mas de 10 años que ha completado al menos Estudios Secundarios (%)", true],
+    "34": ["Economía / Competitividad", "Población de mas de 10 años que ha completado estudios profesionales (%)", true],
+    "35": ["Economía / Competitividad", "Población de mas de 10 años que ha completado estudios Universitarios (%)", true],
+    "50": ["Economía / Competitividad", "Tasa de ocupación juvenil de la población de 16 a 24 años (%)", true],
+    "23": ["Economía / Competitividad", "Contratos indefinidos registrados en el año (% total contratos)", true],
+    "43": ["Cohesión social / Calidad de vida", "Índice de envejecimiento: Población de 65 y más años (%)", false],
+    "111": ["Cohesión social / Calidad de vida", "Densidad poblacional (Hab./Km²)", true],
+    "158": ["Medioambiente y Movilidad", "Parque de turismos (turismos/habtante)", false]
+}

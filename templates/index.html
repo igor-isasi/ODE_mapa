@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html>
+	<head>	
+		<title>ODE mapa</title> 
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/loading.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+		<script src="{{ url_for('static', filename='js/funciones.js') }}"></script>
+ 	</head>
+	<body>
+		<div class="filtrosDiv" id="filtros">
+			<label class="tipoFiltro">INDICADORES</label><br>
+			<div id="indicadores">
+				<script>
+					cargarIndicadores_generarMapa();
+				</script>
+				<div id="indEconomia"></div>
+				<div id="indCohesionSocial"></div>
+				<div id="indMedioambiente"></div>
+				<button onclick="mostrarPopupAñadirIndicador()" class="botonAñadirIndicador" id="botonAñadirIndicador">Añadir indicador</button>
+				<button onclick="mostrarPopupEliminarIndicador()" class="botonEliminarIndicador" id="botonEliminarIndicador">Eliminar indicador</button>
+				<br>
+			</div>
+			<label class="tipoFiltro">TRÁFICO</label><br>
+			<div id="trafico">
+				<div class="elementoFiltro">
+					<label><input type="checkbox" id="filtroTraf1" value="filtroTraf1">Cámaras de tráfico</label><br>
+				</div>
+				<div class="elementoFiltro">
+					<label><input type="checkbox" id="filtroTraf2" value="filtroTraf2">Incidencias</label>
+					<input type="date" id="fechaIncidencia">
+					<br>
+				</div>
+			</div>
+			<label class="tipoFiltro">PRÓXIMOS EVENTOS</label><br>
+			<div id="eventos">
+				<label class="elementoEv"><input type="checkbox" id="filtroEv1" value="filtroEv1">Todos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv2" value="filtroEv2">Conciertos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv3" value="filtroEv3">Teatro</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv4" value="filtroEv4">Danza</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv5" value="filtroEv5">Conferencias</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv6" value="filtroEv6">Bertsolaritza</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv7" value="filtroEv7">Ferias</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv8" value="filtroEv8">Exposiciones</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv9" value="filtroEv9">Proyecciones audiovisuales</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv10" value="filtroEv10">Formaciones</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv11" value="filtroEv11">Concursos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv12" value="filtroEv12">Festivales</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv13" value="filtroEv13">Actividades infantiles</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv14" value="filtroEv14">Fiestas</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEv15" value="filtroEv15">Otros</label>
+				<br>
+			</div>
+			<button onclick="generarMapa()" class="generarMapa" id="generarMapa">GENERAR MAPA</button>
+		</div>
+
+		<div class="popupAñadirIndicador" id="popupAñadirIndicador">
+			<button onclick="ocultarPopupAñadirIndicador()" class="X" id="x">X</button>
+			<div id="indicadoresExtra">
+				<script>
+					cargarIndicadoresExtra();
+				</script>
+			</div>
+				<button onclick="añadirIndicador()" class="botonSubmitIndicador" id="botonSubmitAñadirIndicador"> Añadir indicador</button>
+ 		</div>
+
+		<div class="popupEliminarIndicador" id="popupEliminarIndicador">
+			<button onclick="ocultarPopupEliminarIndicador()" class="X" id="x">X</button>
+			<div id="indicadoresEliminar">
+			</div>
+				<button onclick="eliminarIndicador()" class="botonSubmitIndicador" id="botonSubmitEliminarIndicador"> Eliminar indicador</button>
+		</div>
+
+		<div class="windows8" id="loadingDiv">
+			<div class="wBall" id="wBall_1">
+				<div class="wInnerBall"></div>
+			</div>	
+			<div class="wBall" id="wBall_2">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_3">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_4">
+				<div class="wInnerBall"></div>
+			</div>
+			<div class="wBall" id="wBall_5">
+				<div class="wInnerBall"></div>
+			</div>
+		</div>
+
+		<div class="mapDiv" id="mapa"></div>
+	</body>
+</html>
