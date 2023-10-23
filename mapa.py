@@ -329,6 +329,20 @@ class Mapa:
         else:
             return False
 
+    def __calcularRankingInd(self, indicator):
+        rankingInd = []
+        jsonInd = apis.getIndicator(indicator)
+        # Se mira si los valores altos se consideran positivos o negativos antes de ordenar los municipios
+        if self.indicators[indicator][2]:
+            for ind in jsonInd['municipalities']:
+                tmp_dict = {'lugar': ind['name'], 'data': ind['years'][0][list(ind['years'][0])[-1]]}
+                self.__reverse_insort(rankingInd, tmp_dict)
+        else:
+            for ind in jsonInd['municipalities']:
+                tmp_dict = {'lugar': ind['name'], 'data': ind['years'][0][list(ind['years'][0])[-1]]}
+                self.__insort(rankingInd, tmp_dict)
+        return rankingInd
+    
     def __actualizarRankingGeneral(self, rankingGeneral, rankingInd):
         points = len(rankingInd)
         if len(rankingGeneral) <= 0:
@@ -343,19 +357,6 @@ class Mapa:
                         munGen['points'] = munGen['points'] + points
                         points = points - 1   
         return rankingGeneral
-
-    def __calcularRankingInd(self, indicator):
-        rankingInd = []
-        jsonInd = apis.getIndicator(indicator)
-        if self.indicators[indicator][2]:
-            for ind in jsonInd['municipalities']:
-                tmp_dict = {'lugar': ind['name'], 'data': ind['years'][0][list(ind['years'][0])[-1]]}
-                self.__reverse_insort(rankingInd, tmp_dict)
-        else:
-            for ind in jsonInd['municipalities']:
-                tmp_dict = {'lugar': ind['name'], 'data': ind['years'][0][list(ind['years'][0])[-1]]}
-                self.__insort(rankingInd, tmp_dict)
-        return rankingInd
 
     def __reverse_insort(self, a, x):
         lo = 0
