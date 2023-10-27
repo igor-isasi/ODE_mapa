@@ -8,6 +8,7 @@ let hayIndMedioambiente = false;
 
 const numTrafico = 2;
 const numEventos = 15;
+const numEntidades = 2;
 const pageAccessedByReload = (
 	(window.performance.navigation && window.performance.navigation.type === 1) ||
 	window.performance
@@ -39,15 +40,27 @@ function inicializarFiltros() {
 	// Si se marca el checkbox de todos los eventos que se desmarquen los demás
 	document.getElementById('filtroEv1').addEventListener('change', (event) => {
 		if (event.currentTarget.checked) {
-			for (i = 2; i <= 15; i++) {
+			for (i = 2; i <= numEventos; i++) {
 				document.getElementById('filtroEv' + i).checked = false;
 			}
 		}
 	});
 	// Si se marca cualquier checkbox de evento menos el de todos que se desmarque el de todos
-	for (i = 2; i <= 15; i++) {
-		document.getElementById('filtroEv' + i).addEventListener('change', (event) => {
+	for (i = 2; i <= numEventos; i++) {
+		document.getElementById('filtroEv' + i).addEventListener('change', () => {
 			document.getElementById('filtroEv1').checked = false;
+		});
+	}
+	document.getElementById('filtroEn1').addEventListener('change', (event) => {
+		if (event.currentTarget.checked) {
+			for (i = 2; i <= numEntidades; i++) {
+				document.getElementById('filtroEn' + i).checked = false;
+			}
+		}
+	});
+	for (i = 2; i <= numEntidades; i++) {
+		document.getElementById('filtroEn' + i).addEventListener('change', () => {
+			document.getElementById('filtroEn1').checked = false;
 		});
 	}
 }
@@ -64,6 +77,9 @@ function habilitarFiltros() {
 	for (let indEv = 1; indEv <= numEventos; indEv++) {
 		document.getElementById('filtroEv' + indEv.toString()).disabled = false;
 	}
+	for (let indEn = 1; indEn <= numEntidades; indEn++) {
+		document.getElementById('filtroEn' + indEn.toString()).disabled = false;
+	}
 	document.getElementById('loadingDiv').style.display = 'none';
 	document.getElementById('fechaIncidencia').disabled = false;
 	document.getElementById('filtros').style.visibility = "visible";
@@ -78,6 +94,7 @@ function habilitarFiltros() {
 		document.getElementById('colormapIndMedioambiente').disabled = false;
 	}
 	document.getElementById('generarMapa').disabled = false;
+	document.getElementById('descargarMapa').disabled = false;
 	document.getElementById('botonAñadirIndicador').disabled = false;
 	document.getElementById('botonEliminarIndicador').disabled = false;
 	document.getElementById("botonSubmitAñadirIndicador").disabled = false;
@@ -99,6 +116,9 @@ function bloquearFiltros() {
 	for (let indEv = 1; indEv <= numEventos; indEv++) {
 		document.getElementById('filtroEv' + indEv.toString()).disabled = true;
 	}
+	for (let indEn = 1; indEn <= numEntidades; indEn++) {
+		document.getElementById('filtroEn' + indEn.toString()).disabled = true;
+	}
 	if (hayIndEconomia) {
 		document.getElementById('colormapIndEconomia').disabled = true;
 	}
@@ -113,6 +133,7 @@ function bloquearFiltros() {
 	document.getElementById('mapa').style.visibility = "hidden";
 	document.getElementById('loadingDiv').style.display = 'block';
 	document.getElementById('generarMapa').disabled = true;
+	document.getElementById('descargarMapa').disabled = true;
 	document.getElementById('botonAñadirIndicador').disabled = true;
 	document.getElementById('botonEliminarIndicador').disabled = true;
 }
@@ -120,69 +141,82 @@ function bloquearFiltros() {
 function cargarIndicadores_generarMapa() {
 	// Cargar los años de los indicadores desde un web service que saca la info de la base de datos
 	fetch('../webServiceAñosInd')
-	.then(response => response.json())
+	.then(response => {
+		let contentType = response.headers.get("content-type");
+		if (contentType == "application/json") {
+			return response.json();
+		} else {
+			return response.text();
+		}
+	})
 	.then(añosInd => {
-		// Cargar los indicadores desde el fichero indicators.json
-		fetch('../indicators.json')
-		.then(response => response.json())
-		.then(indicators => {
-			hayIndEconomia = false;
-			hayIndCohesion = false;
-			hayIndMedioambiente = false;
-			let htmlIndEconomia = "<label class='grupoInd'>ECONOMÍA</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndEconomia'>Mostrar colormap</label><br><div class='bloqueInd'>";
-			let htmlIndCohesion = "<label class='grupoInd'>COHESIÓN SOCIAL / CALIDAD DE VIDA</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndCohesion'>Mostrar colormap</label><br><div class='bloqueInd'>";
-			let htmlIndMedioambiente = "<label class='grupoInd'>MEDIOAMBIENTE Y MOVILIDAD</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndMedioambiente'>Mostrar colormap</label><br><div class='bloqueInd'>";
-			let htmlIndicadoresEliminar = "<select class='selectIndEliminar' id='selectIndEliminar'>";
-			ind_keys = [];
-			for (let key in indicators) {
-				let htmlAñosInd = "";
-				numIndicadores = numIndicadores + 1;
-				ind_keys.push(key);
-				añosInd[key].reverse();
-				for (let año of añosInd[key]){
-					htmlAñosInd = htmlAñosInd + "<option value=" + año + ">" + año + "</option>";
+		if (añosInd == "ApiError") {
+			alert("Ha ocurrido un error al intentar conectar con la API de indicadores de Open Data Euskadi.\nNo es posible cargar la página.");
+			var html = "<h1>No se ha podido cargar la página</h1>";
+    		document.getElementsByTagName('body')[0].innerHTML = html; 
+		} else {
+			// Cargar los indicadores desde el fichero indicators.json
+			fetch('../indicators.json')
+			.then(response => response.json())
+			.then(indicators => {
+				hayIndEconomia = false;
+				hayIndCohesion = false;
+				hayIndMedioambiente = false;
+				let htmlIndEconomia = "<label class='grupoInd'>ECONOMÍA</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndEconomia'>Mostrar colormap</label><br><div class='bloqueInd'>";
+				let htmlIndCohesion = "<label class='grupoInd'>COHESIÓN SOCIAL / CALIDAD DE VIDA</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndCohesion'>Mostrar colormap</label><br><div class='bloqueInd'>";
+				let htmlIndMedioambiente = "<label class='grupoInd'>MEDIOAMBIENTE Y MOVILIDAD</label><label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapIndMedioambiente'>Mostrar colormap</label><br><div class='bloqueInd'>";
+				let htmlIndicadoresEliminar = "<select class='selectIndEliminar' id='selectIndEliminar'>";
+				ind_keys = [];
+				for (let key in indicators) {
+					let htmlAñosInd = "";
+					numIndicadores = numIndicadores + 1;
+					ind_keys.push(key);
+					añosInd[key].reverse();
+					for (let año of añosInd[key]){
+						htmlAñosInd = htmlAñosInd + "<option value=" + año + ">" + año + "</option>";
+					}
+					let htmlIndicador = "<div class='elementoFiltro'><label><input type='checkbox' id='filtroInd" + key + "'>" + indicators[key][1] + "</label>" + 
+						"<select class='añoFiltro' id='añoFiltroInd" + key + "'>" + htmlAñosInd + "</select>" + 
+						"<label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapInd" + key + "'>Mostrar colormap</label><br></div>";
+					if (indicators[key][0] == "Economía / Competitividad") {
+						hayIndEconomia = true;
+						htmlIndEconomia = htmlIndEconomia + htmlIndicador;
+					} else if(indicators[key][0] == "Cohesión social / Calidad de vida") {
+						hayIndCohesion = true;
+						htmlIndCohesion = htmlIndCohesion + htmlIndicador;
+					} else if(indicators[key][0] == "Medioambiente y Movilidad") {
+						hayIndMedioambiente = true;
+						htmlIndMedioambiente = htmlIndMedioambiente + htmlIndicador;
+					}
+					htmlIndicadoresEliminar = htmlIndicadoresEliminar + "<option value='" + key + ":" + indicators[key][0] + ":" + indicators[key][1] + ":" + indicators[key][2] + "'>" + key + ": " + indicators[key][1] + "</option>";
 				}
-				let htmlIndicador = "<div class='elementoFiltro'><label><input type='checkbox' id='filtroInd" + key + "'>" + indicators[key][1] + "</label>" + 
-					"<select class='añoFiltro' id='añoFiltroInd" + key + "'>" + htmlAñosInd + "</select>" + 
-					"<label class='mostrarColormap'><input type='checkbox' class='checkboxColormap' id='colormapInd" + key + "'>Mostrar colormap</label><br></div>";
-				if (indicators[key][0] == "Economía / Competitividad") {
-					hayIndEconomia = true;
-					htmlIndEconomia = htmlIndEconomia + htmlIndicador;
-				} else if(indicators[key][0] == "Cohesión social / Calidad de vida") {
-					hayIndCohesion = true;
-					htmlIndCohesion = htmlIndCohesion + htmlIndicador;
-				} else if(indicators[key][0] == "Medioambiente y Movilidad") {
-					hayIndMedioambiente = true;
-					htmlIndMedioambiente = htmlIndMedioambiente + htmlIndicador;
+				if (hayIndEconomia) {
+					htmlIndEconomia = htmlIndEconomia + "</div>";
+					document.getElementById("indEconomia").innerHTML = htmlIndEconomia;
+				} else {
+					document.getElementById("indEconomia").innerHTML = "";
 				}
-				htmlIndicadoresEliminar = htmlIndicadoresEliminar + "<option value='" + key + ":" + indicators[key][0] + ":" + indicators[key][1] + ":" + indicators[key][2] + "'>" + key + ": " + indicators[key][1] + "</option>";
-			}
-			if (hayIndEconomia) {
-				htmlIndEconomia = htmlIndEconomia + "</div>";
-				document.getElementById("indEconomia").innerHTML = htmlIndEconomia;
-			} else {
-				document.getElementById("indEconomia").innerHTML = "";
-			}
-			if (hayIndCohesion) {
-				htmlIndCohesion = htmlIndCohesion + "</div>";
-				document.getElementById("indCohesionSocial").innerHTML = htmlIndCohesion;
-			} else {
-				document.getElementById("indCohesionSocial").innerHTML = "";
-			}
-			if (hayIndMedioambiente) {
-				htmlIndMedioambiente = htmlIndMedioambiente + "</div>";
-				document.getElementById("indMedioambiente").innerHTML = htmlIndMedioambiente;
-			} else {
-				document.getElementById("indMedioambiente").innerHTML = "";
-			}
-			htmlIndicadoresEliminar = htmlIndicadoresEliminar + "</select>";
-			document.getElementById("indicadoresEliminar").innerHTML = htmlIndicadoresEliminar;
-			inicializarFiltros();
-			if (pageAccessedByReload == true) {
-				reiniciarFiltros();
-			}
-			generarMapa();
-		})
+				if (hayIndCohesion) {
+					htmlIndCohesion = htmlIndCohesion + "</div>";
+					document.getElementById("indCohesionSocial").innerHTML = htmlIndCohesion;
+				} else {
+					document.getElementById("indCohesionSocial").innerHTML = "";
+				}
+				if (hayIndMedioambiente) {
+					htmlIndMedioambiente = htmlIndMedioambiente + "</div>";
+					document.getElementById("indMedioambiente").innerHTML = htmlIndMedioambiente;
+				} else {
+					document.getElementById("indMedioambiente").innerHTML = "";
+				}
+				htmlIndicadoresEliminar = htmlIndicadoresEliminar + "</select>";
+				document.getElementById("indicadoresEliminar").innerHTML = htmlIndicadoresEliminar;
+				inicializarFiltros();
+				if (pageAccessedByReload == true) {
+					reiniciarFiltros();
+				}
+				generarMapa();
+			})
+		}
 	});
 }
 
@@ -220,30 +254,64 @@ function generarMapa() {
 		filtros['filtroEv' + indEv.toString()] = document.getElementById('filtroEv' + indEv.toString()).checked;
 		document.getElementById('filtroEv' + indEv.toString()).disabled = true;
 	}
-	let request = new XMLHttpRequest();
-	request.open('POST', '/');
-
-	request.onload = function() {
-		if (request.status == 200 && request.responseText == 'mapa cargado') {
-			const promiseMapa = new Promise((resolve) => {
-				document.getElementById('mapa').innerHTML = '<iframe src="mapa.html/" height="99%" width="99%"></iframe>';
-				setTimeout(() => resolve("Mapa cargado correctamente"), 4500)
-			});
+	//Entidades
+	for (let indEn = 1; indEn <= numEntidades; indEn++) {
+		filtros['filtroEn' + indEn.toString()] = document.getElementById('filtroEn' + indEn.toString()).checked;
+		document.getElementById('filtroEn' + indEn.toString()).disabled = true;
+	}
+	fetch('/', {
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		method: "POST",
+		body: "tipoRequest=mapa" + "&filtros=" + JSON.stringify(filtros) + "&añosInd=" + JSON.stringify(añosInd) + "&colormap=" + JSON.stringify(colormap) + "&fechaIncidencia=" + fechaIncidencia
+	}).then(response => {
+		let contentType = response.headers.get("content-type");
+		if (contentType == "application/json") {
+			return response.json();
+		} else {
+			return response.text();
+		}
+	}).then(res => {
+		const promiseMapa = new Promise((resolve) => {
+			document.getElementById('mapa').innerHTML = '<iframe src="mapa.html/" height="99%" width="99%"></iframe>';
+			setTimeout(() => resolve("Mapa cargado correctamente"), 4500)
+		});
+		if (res == "mapa cargado") {
 			promiseMapa.then((resolveMessage) => {
 				console.log(resolveMessage);
 				habilitarFiltros();
 			});
 		} else {
-			alert('Ha ocurrido un error.');
+			promiseMapa.then((resolveMessage) => {
+				console.log(resolveMessage);
+				habilitarFiltros();
+			});
+			let strErrores = "";
+			let errorIndicadores = False;
+			for (error of res) {
+				if (error == "API de indicadores municipales") {
+					errorIndicadores = True;
+				}
+				strErrores = strErrores + error + ", ";
+			}
+			strErrores = strErrores.split(',').slice(0, -1) + ".";
+			if (errorIndicadores == True) {
+				alert("Ha ocurrido un error al intentar conectar con la API de indicadores de Open Data Euskadi.\nNo es posible cargar la página.");
+				var html = "<h1>No se ha podido cargar la página</h1>";
+				document.getElementsByTagName('body')[0].innerHTML = html;
+			}
+			else if (res.length >= 2) {
+				let mensaje = "Ha ocurrido un error al solicitar información de las siguientes APIs: " + strErrores + 
+				"\nEs posible que la información relacionada con estas APIs no se muestre en el mapa.";
+				alert(mensaje);
+			} else if (res.length > 0) {
+				let mensaje = "Ha ocurrido un error al solicitar información de la siguiente API: " + strErrores + 
+				"\nEs posible que la información relacionada con esta API no se muestre en el mapa.";
+				alert(mensaje);
+			}
 		}
-	};
-
-	request.onerror = function() {
-		alert('Ha ocurrido un error al cargar el mapa');
-	};
-
-	request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	request.send("tipoRequest=mapa" + "&filtros=" + JSON.stringify(filtros) + "&añosInd=" + JSON.stringify(añosInd) + "&colormap=" + JSON.stringify(colormap) + "&fechaIncidencia=" + fechaIncidencia);
+	});
 }
 
 function reiniciarFiltros() {
@@ -255,6 +323,9 @@ function reiniciarFiltros() {
 	}
 	for (let indEv = 1; indEv <= numEventos; indEv++) {
 		document.getElementById('filtroEv' + indEv.toString()).checked = false;
+	}
+	for (let indEn = 1; indEn <= numEntidades; indEn++) {
+		document.getElementById('filtroEn' + indEn.toString()).checked = false;
 	}
 	ocultarPopupAñadirIndicador();
 	ocultarPopupEliminarIndicador();
@@ -311,10 +382,16 @@ function añadirIndicador() {
 			body: JSON.stringify(postData)
 		}).then(res => res.text())
 		.then(text => {
-			document.getElementById("filtros").style.visibility = "hidden";
-			reiniciarFiltros();
-			cargarIndicadoresExtra();
-			cargarIndicadores_generarMapa();
+			if (text == "Indicador añadido") {
+				document.getElementById("filtros").style.visibility = "hidden";
+				reiniciarFiltros();
+				cargarIndicadoresExtra();
+				cargarIndicadores_generarMapa();
+			} else {
+				alert("Ha ocurrido un error con la conexión a la API de indicadores. No se ha podido añadir el nuevo indicador.")
+				location.reload();
+			}
+			
 		});
 	}
 }
@@ -350,3 +427,17 @@ function eliminarIndicador() {
 		});
 	}
 }
+
+function descargarMapa() {
+	fetch('mapa.html', { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+	  .then(res => res.blob())
+	  .then(res => {
+		const aElement = document.createElement('a');
+		aElement.setAttribute('download', 'ODE_mapa');
+		const href = URL.createObjectURL(res);
+		aElement.href = href;
+		aElement.setAttribute('target', '_blank');
+		aElement.click();
+		URL.revokeObjectURL(href);
+	  });
+  };

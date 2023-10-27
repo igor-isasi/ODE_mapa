@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from mapa import Mapa
 import json
+import apis
 
 app = Flask(__name__)
 myMapa = Mapa()
@@ -17,7 +18,9 @@ def index():
             añosInd = json.loads(dataForm['añosInd'])
             colormap = json.loads(dataForm['colormap'])
             fechaIncidencia = dataForm['fechaIncidencia']
-            myMapa.generarMapa(filtros, añosInd, colormap, fechaIncidencia)
+            erroresApi = myMapa.generarMapa(filtros, añosInd, colormap, fechaIncidencia)
+            if len(erroresApi) > 0:
+                return jsonify(erroresApi)
             return 'mapa cargado'
 
 @app.route('/mapa.html/')
@@ -35,7 +38,10 @@ def extraIndicators_json():
 @app.route('/webServiceAñosInd/')
 def getAñosInd():
     añosInd = myMapa.getAñosInd()
-    return añosInd
+    if añosInd != None:
+        return añosInd
+    else:
+        return 'ApiError'
 
 @app.route('/webServiceAñadirIndicador', methods=['POST'])
 def añadirIndicador():
@@ -45,8 +51,11 @@ def añadirIndicador():
         tipoInd = dataJson['ind'].split(':')[1]
         nombreInd = dataJson['ind'].split(':')[2]
         descInd = bool(dataJson['ind'].split(':')[3])
-        myMapa.añadirIndicador(indicatorId, tipoInd, nombreInd, descInd)
-        return 'Indicador añadido'
+        errorApi = myMapa.añadirIndicador(indicatorId, tipoInd, nombreInd, descInd)
+        if not errorApi:
+            return 'Indicador añadido'
+        else:
+            return 'ApiError'
     
 @app.route('/webServiceEliminarIndicador', methods=['POST'])
 def eliminarIndicador():

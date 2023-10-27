@@ -57,7 +57,7 @@ select {
 	background-color: #3a8ef7;
 }
 
-.elementoEv {
+.elementoEv, .elementoEn {
 	border: 1px solid black;
 	padding: 1px;
 	padding-right: 6px;
@@ -83,27 +83,28 @@ select {
 
 #eventos {
 	margin-top: 5px;
-	margin-bottom: 8px;
+	margin-bottom: 5px;
 }
 
-.generarMapa {
+#entidades {
+	margin-top: 5px;
+	margin-bottom: 4px;
+}
+
+.generarMapa, .descargarMapa {
 	background-color: bisque;
 	font-size: 15px;
 	padding: 5px 8px;
 	cursor: pointer;
 }
 
-.generarMapa:hover {
+.generarMapa:hover, .descargarMapa:hover {
 	background-color: burlywood;
 }
 
-.generarMapa:disabled {
+.generarMapa:disabled, .descargarMapa:disabled {
 	cursor: not-allowed;
 }
-
-/* .filtrosDiv label {
-        font-size: 13px;
-} */
 
 .mapDiv {
 	display: inline-block;
