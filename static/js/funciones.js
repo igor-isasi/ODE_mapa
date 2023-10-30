@@ -279,24 +279,22 @@ function generarMapa() {
 		});
 		if (res == "mapa cargado") {
 			promiseMapa.then((resolveMessage) => {
-				console.log(resolveMessage);
 				habilitarFiltros();
 			});
 		} else {
 			promiseMapa.then((resolveMessage) => {
-				console.log(resolveMessage);
 				habilitarFiltros();
 			});
 			let strErrores = "";
-			let errorIndicadores = False;
+			let errorIndicadores = false;
 			for (error of res) {
 				if (error == "API de indicadores municipales") {
-					errorIndicadores = True;
+					errorIndicadores = true;
 				}
 				strErrores = strErrores + error + ", ";
 			}
 			strErrores = strErrores.split(',').slice(0, -1) + ".";
-			if (errorIndicadores == True) {
+			if (errorIndicadores == true) {
 				alert("Ha ocurrido un error al intentar conectar con la API de indicadores de Open Data Euskadi.\nNo es posible cargar la página.");
 				var html = "<h1>No se ha podido cargar la página</h1>";
 				document.getElementsByTagName('body')[0].innerHTML = html;

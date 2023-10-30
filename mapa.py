@@ -36,6 +36,8 @@ class Mapa:
             erroresApi.append(errorApiTraf)
         if errorApiEv != None:
             erroresApi.append(errorApiEv)
+        if errorApiEnt != None:
+            erroresApi.append(errorApiEnt)
         # Generar geojson con la informacion y añadir plugins
         geo = folium.GeoJson(
             self.geojson, 
@@ -49,7 +51,7 @@ class Mapa:
         ).add_to(mapa)
         folium.TileLayer('OpenStreetMap').add_to(mapa)
         folium.LayerControl().add_to(mapa)
-        mapa.fit_bounds(mapa.get_bounds())
+        mapa.fit_bounds(mapa.get_bounds(), padding = (1,1))
         Search(layer=geo,
                 geom_type='Polygon',
                 placeholder='Busca un municipio',
@@ -163,7 +165,7 @@ class Mapa:
                 if self.indicators[indicator][0] == 'Cohesión social / Calidad de vida':
                     jsonInd = apis.getIndicator(indicator)
                     if jsonInd != None and not errorColormapCohe:
-                        rankingColormapInd[indicator] = self.__calcularRankingInd(indicator)
+                        rankingColormapInd[indicator] = self.__calcularRankingInd(indicator, jsonInd)
                         rankingColormapGeneral = self.__actualizarRankingGeneral(rankingColormapGeneral, rankingColormapInd[indicator])
                     else:
                         if not errorColormapCohe:
@@ -173,7 +175,7 @@ class Mapa:
                 if self.indicators[indicator][0] == 'Medioambiente y Movilidad':
                     jsonInd = apis.getIndicator(indicator)
                     if jsonInd != None and not errorColormapMedi:
-                        rankingColormapInd[indicator] = self.__calcularRankingInd(indicator)
+                        rankingColormapInd[indicator] = self.__calcularRankingInd(indicator, jsonInd)
                         rankingColormapGeneral = self.__actualizarRankingGeneral(rankingColormapGeneral, rankingColormapInd[indicator])
                     else:
                         if not errorColormapMedi:
@@ -389,7 +391,7 @@ class Mapa:
                 self.__añadirEntidades(jsonEntidades['pageItems'], fg_centrosDeSalud)
                 fg_centrosDeSalud.add_to(mapa)
             else:
-                errorApi = 'API de eventos culturales'
+                errorApi = 'API de personas, entidades y equipamientos'
         return errorApi
 
     def __generarColormapGrupo(self, mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases):

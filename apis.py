@@ -211,7 +211,6 @@ def getCentrosDeSalud():
     response = requests.get(url=qUrl, params=qParams, headers=qHeaders)
     if response.ok:
         myJson = response.json()
-        
     else:
         myJson = None
     return myJson
