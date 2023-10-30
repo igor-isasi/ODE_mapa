@@ -51,7 +51,7 @@ def getIncidenciasDia(fecha):
     return myJsonList
 
 def getProximosConcierto():
-    qUrl = "https://api.euskadi.eus/culture/events/v1.0/events/upcoming3"
+    qUrl = "https://api.euskadi.eus/culture/events/v1.0/events/upcoming"
     qParams = {"_elements": 200, "_page": 1, "type": 1}
     qHeaders = {'accept': 'application/json'}
     response = requests.get(url=qUrl, params=qParams, headers=qHeaders)
