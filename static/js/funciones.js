@@ -8,7 +8,7 @@ let hayIndMedioambiente = false;
 
 const numTrafico = 2;
 const numEventos = 15;
-const numEntidades = 2;
+const numEntidades = 7;
 const pageAccessedByReload = (
 	(window.performance.navigation && window.performance.navigation.type === 1) ||
 	window.performance
