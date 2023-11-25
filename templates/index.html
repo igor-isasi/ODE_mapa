@@ -4,83 +4,107 @@
 	<head>	
 		<title>ODE mapa</title> 
 		<meta charset="utf-8">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/loading.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-		<script src="{{ url_for('static', filename='js/funciones.js') }}"></script>
+		<!-- <script src="{{ url_for('static', filename='js/Main.js') }}"></script> -->
  	</head>
 	<body>
 		<div class="filtrosDiv" id="filtros">
 			<label class="tipoFiltro">INDICADORES</label><br>
 			<div id="indicadores">
-				<script>
-					cargarIndicadores_generarMapa();
-				</script>
 				<div id="indEconomia"></div>
 				<div id="indCohesionSocial"></div>
 				<div id="indMedioambiente"></div>
-				<button onclick="mostrarPopupAñadirIndicador()" class="botonAñadirIndicador" id="botonAñadirIndicador">Añadir indicador</button>
-				<button onclick="mostrarPopupEliminarIndicador()" class="botonEliminarIndicador" id="botonEliminarIndicador">Eliminar indicador</button>
+				<button class="botonAñadirIndicador" id="botonAñadirIndicador">Añadir indicador</button>
+				<button class="botonEliminarIndicador" id="botonEliminarIndicador">Eliminar indicador</button>
+				<button class="botonReiniciarIndicadores" id="botonReiniciarIndicadores">Reiniciar indicadores</button>
 				<br>
 			</div>
 			<label class="tipoFiltro">TRÁFICO</label><br>
 			<div id="trafico">
 				<div class="elementoFiltro">
-					<label><input type="checkbox" id="filtroTraf1" value="filtroTraf1">Cámaras de tráfico</label><br>
+					<label><input type="checkbox" id="filtroTrafCamaras">Cámaras de tráfico</label><br>
 				</div>
 				<div class="elementoFiltro">
-					<label><input type="checkbox" id="filtroTraf2" value="filtroTraf2">Incidencias</label>
+					<label><input type="checkbox" id="filtroTrafIncidencias">Incidencias</label>
 					<input type="date" id="fechaIncidencia">
 					<br>
 				</div>
 			</div>
 			<label class="tipoFiltro">PRÓXIMOS EVENTOS</label><br>
 			<div id="eventos">
-				<label class="elementoEv"><input type="checkbox" id="filtroEv1" value="filtroEv1">Todos</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv2" value="filtroEv2">Conciertos</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv3" value="filtroEv3">Teatro</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv4" value="filtroEv4">Danza</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv5" value="filtroEv5">Conferencias</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv6" value="filtroEv6">Bertsolaritza</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv7" value="filtroEv7">Ferias</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv8" value="filtroEv8">Exposiciones</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv9" value="filtroEv9">Proyecciones audiovisuales</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv10" value="filtroEv10">Formaciones</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv11" value="filtroEv11">Concursos</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv12" value="filtroEv12">Festivales</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv13" value="filtroEv13">Actividades infantiles</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv14" value="filtroEv14">Fiestas</label>
-				<label class="elementoEv"><input type="checkbox" id="filtroEv15" value="filtroEv15">Otros</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroTodosEv">Todos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvConciertos">Conciertos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvTeatro">Teatro</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvDanza">Danza</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvConferencias">Conferencias</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvBertsolaritza">Bertsolaritza</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvFerias">Ferias</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvExposiciones">Exposiciones</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvProyecciones">Proyecciones audiovisuales</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvFormaciones">Formaciones</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvConcursos">Concursos</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvFestivales">Festivales</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvInfantiles">Actividades infantiles</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvFiestas">Fiestas</label>
+				<label class="elementoEv"><input type="checkbox" id="filtroEvOtros">Otros</label>
 				<br>
 			</div>
+			<!-- <label class="tipoFiltro">EVENTOS ADMINISTRATIVOS</label>
+			<div id="eventosAdministrativos">
+				<div class="elementoEvAd">
+					<label><input type="checkbox" id="filtroEvAd1">Eventos administrativos</label>
+					<input type="date" id="fechaEventosAdmin">
+					<br>
+				</div>
+			</div> -->
 			<label class="tipoFiltro">ENTIDADES</label>
 			<div id="entidades">
-				<label class="elementoEn"><input type="checkbox" id="filtroEn1" value="filtroEn1">Todos</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn2" value="filtroEn2">Centros sanitarios</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn3" value="filtroEn3">Entidades religiosas</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn4" value="filtroEn4">Entidades legislativas</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn5" value="filtroEn5">Entidades judiciales</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn6" value="filtroEn6">Entidades de partidos políticos</label>
-				<label class="elementoEn"><input type="checkbox" id="filtroEn7" value="filtroEn7">Fundaciones</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroTodosEn">Todos</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnSanitarios">Centros sanitarios</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnReligiosas">Entidades religiosas</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnLegislativas">Entidades legislativas</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnJudiciales">Entidades judiciales</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnPartidos">Entidades de partidos políticos</label>
+				<label class="elementoEn"><input type="checkbox" id="filtroEnFundaciones">Fundaciones</label>
 			</div>
-			<button onclick="generarMapa()" class="generarMapa" id="generarMapa">GENERAR MAPA</button>
-			<button onclick="descargarMapa()" class="descargarMapa" id="descargarMapa">DESCARGAR MAPA</button>
+			<label class="tipoFiltro">METEOROLOGÍA</label>
+			<div id="meteorologia">
+				<div class="elementoMet">
+					<label><input type="checkbox" id="filtroMetPred">Prediccion meteorológica</label>
+					<input type="date" id="fechaMeteo">
+				</div>
+				<div class="elementoMet">
+					<label><input type="checkbox" id="filtroMetPredUbi">Predicción meteorológica por ubicación</label>
+					<input type="date" id="fechaMeteoUbi">
+					<div class="autocomplete">
+						<input type="text" id="txtUbicacion" placeholder="Ubicación">
+					</div>
+					<br>
+				</div>
+			</div>
+			<div>
+				<button class="reiniciarFiltros" id="reiniciarFiltros">REINICIAR FILTROS</button>
+			</div>
+			<button class="generarMapa" id="generarMapa">GENERAR MAPA</button>
+			<button class="descargarMapa" id="descargarMapa">DESCARGAR MAPA</button>
 		</div>
 
-		<div class="popupAñadirIndicador" id="popupAñadirIndicador">
-			<button onclick="ocultarPopupAñadirIndicador()" class="X" id="x">X</button>
-			<div id="indicadoresExtra">
-				<script>
-					cargarIndicadoresExtra();
-				</script>
+		<div class="popups" id="popups">
+			<div class="popupAñadirIndicador" id="popupAñadirIndicador">
+				<button class="X" id="xAñadirIndicador">X</button>
+				<div id="indicadoresExtra">
+				</div>
+					<button class="botonSubmitIndicador" id="botonSubmitAñadirIndicador"> Añadir indicador</button>
 			</div>
-				<button onclick="añadirIndicador()" class="botonSubmitIndicador" id="botonSubmitAñadirIndicador"> Añadir indicador</button>
- 		</div>
 
-		<div class="popupEliminarIndicador" id="popupEliminarIndicador">
-			<button onclick="ocultarPopupEliminarIndicador()" class="X" id="x">X</button>
-			<div id="indicadoresEliminar">
+			<div class="popupEliminarIndicador" id="popupEliminarIndicador">
+				<button class="X" id="xEliminarIndicador">X</button>
+				<div id="indicadoresEliminar">
+				</div>
+					<button class="botonSubmitIndicador" id="botonSubmitEliminarIndicador"> Eliminar indicador</button>
 			</div>
-				<button onclick="eliminarIndicador()" class="botonSubmitIndicador" id="botonSubmitEliminarIndicador"> Eliminar indicador</button>
 		</div>
 
 		<div class="windows8" id="loadingDiv">
@@ -102,5 +126,7 @@
 		</div>
 
 		<div class="mapDiv" id="mapa"></div>
+
+		<script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 	</body>
 </html>

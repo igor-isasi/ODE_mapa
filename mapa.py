@@ -1,15 +1,9 @@
 import folium
 from folium.plugins import Search, Fullscreen
-import branca
-import apis
+from apis import apiIndicadores as apiInd
 import json
-import pandas
 import shutil
-import pyproj
-import indicadores
-import trafico
-import eventos
-import entidades
+from filtros import indicadores, trafico, eventos, entidades, meteorologia
 
 class Mapa:
     def __init__(self):
@@ -20,19 +14,23 @@ class Mapa:
         self.geojson = json.load(geojson_f)
         self.__cargarGeoJson()
 
-    def generarMapa(self, filtros, añosInd, colormapInd, fechaIncidencia):
-        mapa = folium.Map(tiles="cartodb positron")
+    def generarMapa(self, filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi):
+        mapa = folium.Map(tiles="OpenStreetMap")
         geojson_fields = ['iz_ofizial']
         geojson_aliases = ['Municipio:']
         erroresApi = []
         # Indicadores y colormap
-        errorApiInd = indicadores.generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fields, geojson_aliases, self.indicators, self.geojson)
+        errorApiInd = indicadores.generarIndicadoresColormap(mapa, filtros, añosInd, geojson_fields, geojson_aliases, self.indicators, self.geojson)
         # Trafico
         errorApiTraf = trafico.generarEventosTrafico(mapa, filtros, fechaIncidencia)
         # Eventos
         errorApiEv = eventos.generarEventosGenerales(mapa, filtros)
         # Eventos administrativos
+        #errorApiEvAd = eventosAdmin.generarEventosAdmin(mapa, filtros, fechaEventosAdmin)
+        # Entidades
         errorApiEnt = entidades.generarEntidades(mapa, filtros)
+        # Meteorologia
+        errorApiMet = meteorologia.generarPrediccionMeteo(mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi)
         # Comprobar si ha habido error con las APIs en cualquiera de las solicitudes
         if errorApiInd != None:
             erroresApi.append(errorApiInd)
@@ -42,10 +40,13 @@ class Mapa:
             erroresApi.append(errorApiEv)
         if errorApiEnt != None:
             erroresApi.append(errorApiEnt)
+        if errorApiMet != None:
+            erroresApi.append(errorApiMet)
         # Generar geojson con la informacion y añadir plugins
         geo = folium.GeoJson(
             self.geojson, 
             tooltip=folium.features.GeoJsonTooltip(fields=geojson_fields, aliases=geojson_aliases), 
+            highlight_function=lambda x: {'fillColor': 'black'},
             name='geojson').add_to(mapa)
         Fullscreen(
             position="topright",
@@ -53,7 +54,7 @@ class Mapa:
             title_cancel="Salir de pantalla completa",
             force_separate_button=True,
         ).add_to(mapa)
-        folium.TileLayer('OpenStreetMap').add_to(mapa)
+        folium.TileLayer('cartodb positron').add_to(mapa)
         folium.LayerControl().add_to(mapa)
         mapa.fit_bounds(mapa.get_bounds(), padding = (1,1))
         Search(layer=geo,
@@ -99,11 +100,16 @@ class Mapa:
             extraIndicators.update(newExtraInd)
         with open('templates/extraIndicators.json', 'w') as fExtraW:
             json.dump(extraIndicators, fExtraW)
+        
+    def reiniciarIndicadores(self):
+        shutil.copyfile('templates/indicatorsBase.json', 'templates/indicators.json')
+        shutil.copyfile('templates/extraIndicatorsBase.json', 'templates/extraIndicators.json')
+        self.indicators = self.__cargarIndicadores()
 
     def getAñosInd(self):
         añosInd = {}
         for ind in self.indicators:
-            jsonInd = apis.getIndicator(ind)
+            jsonInd = apiInd.getIndicator(ind)
             if jsonInd != None:
                 años = [list(i['years'][0].keys()) for i in jsonInd['municipalities']]
                 añosInd[ind] = años[0]
@@ -115,7 +121,7 @@ class Mapa:
     def __cargarGeoJson(self):
         errorApi = False
         for ind in self.indicators:
-            jsonInd = apis.getIndicator(ind)
+            jsonInd = apiInd.getIndicator(ind)
             if jsonInd != None:
                 for indMun in jsonInd['municipalities']:
                     for municipio in self.geojson['features']:
@@ -128,7 +134,7 @@ class Mapa:
         return errorApi
                 
     def __cargarNuevoIndGeoJson(self, ind):
-        jsonInd = apis.getIndicator(ind)
+        jsonInd = apiInd.getIndicator(ind)
         errorApi = False
         if jsonInd != None:
             for indMun in jsonInd['municipalities']:

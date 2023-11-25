@@ -3,5 +3,13 @@ services:
     build: .
     volumes:
       - ../:/code
+    secrets:
+      - euskalmet_private_apikey
+      - euskalmet_fingerprint
     ports:
       - "80:5000"
+secrets:
+  euskalmet_private_apikey:
+    file: ../../EuskalmetAPI/privateKey.pem
+  euskalmet_fingerprint:
+    file: ../../EuskalmetAPI/fingerPrint.txt

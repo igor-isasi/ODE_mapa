@@ -1,9 +1,9 @@
-import apis
+from apis import apiIndicadores as api
 import branca
 import pandas
 import folium
 
-def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fields, geojson_aliases, indicators, geojson):
+def generarIndicadoresColormap(mapa, filtros, añosInd, geojson_fields, geojson_aliases, indicators, geojson):
     rankingColormapInd = {}
     rankingColormapGeneral = []
     errorColormapEco = False
@@ -13,14 +13,14 @@ def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fie
     errorApi = None
     # Indicadores
     for indicator in indicators:
-        año = añosInd['filtroInd' + str(indicator)]
+        año = añosInd['añoFiltroInd' + str(indicator)]
         if filtros['filtroInd' + str(indicator)]:
             geojson_fields.append('indicator_' + str(indicator) + '_' + año)
             geojson_aliases.append(indicators[indicator][1] + ' (' + año + ')')
         # Colormap
-        if colormapInd['colormapIndEconomia']:
+        if filtros['colormapIndEconomia']:
             if indicators[indicator][0] == 'Economía / Competitividad':
-                jsonInd = apis.getIndicator(indicator)
+                jsonInd = api.getIndicator(indicator)
                 if jsonInd != None and not errorColormapEco:
                     rankingColormapInd[indicator] = calcularRankingInd(indicator, jsonInd, indicators)
                     rankingColormapGeneral = actualizarRankingGeneral(rankingColormapGeneral, rankingColormapInd[indicator])
@@ -28,9 +28,9 @@ def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fie
                     if not errorColormapEco:
                         errorApi = 'API de indicadores municipales'
                     errorColormapEco = True
-        elif colormapInd['colormapIndCohesion']:
+        elif filtros['colormapIndCohesion']:
             if indicators[indicator][0] == 'Cohesión social / Calidad de vida':
-                jsonInd = apis.getIndicator(indicator)
+                jsonInd = api.getIndicator(indicator)
                 if jsonInd != None and not errorColormapCohe:
                     rankingColormapInd[indicator] = calcularRankingInd(indicator, jsonInd, indicators)
                     rankingColormapGeneral = actualizarRankingGeneral(rankingColormapGeneral, rankingColormapInd[indicator])
@@ -38,9 +38,9 @@ def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fie
                     if not errorColormapCohe:
                         errorApi = 'API de indicadores municipales'
                     errorColormapCohe = True
-        elif colormapInd['colormapIndMedioambiente']:
+        elif filtros['colormapIndMedioambiente']:
             if indicators[indicator][0] == 'Medioambiente y Movilidad':
-                jsonInd = apis.getIndicator(indicator)
+                jsonInd = api.getIndicator(indicator)
                 if jsonInd != None and not errorColormapMedi:
                     rankingColormapInd[indicator] = calcularRankingInd(indicator, jsonInd, indicators)
                     rankingColormapGeneral = actualizarRankingGeneral(rankingColormapGeneral, rankingColormapInd[indicator])
@@ -48,10 +48,10 @@ def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fie
                     if not errorColormapMedi:
                         errorApi = 'API de indicadores municipales'
                     errorColormapMedi = True
-        elif colormapInd['colormapInd' + str(indicator)]:
+        elif filtros['colormapInd' + str(indicator)]:
             ind_colormap = indicator
             año_colormap = año
-            jsonInd = apis.getIndicator(indicator)
+            jsonInd = api.getIndicator(indicator)
             if jsonInd != None:
                 data = {'lugar': [], 'dato': []}
                 for indMunicipio in jsonInd['municipalities']:
@@ -85,13 +85,13 @@ def generarIndicadoresColormap(mapa, filtros, añosInd, colormapInd, geojson_fie
                     errorApi = 'API de indicadores municipales'
                 errorColormapInd = True
     # Crear y añadir colormap de los grupos de indicadores
-    if colormapInd['colormapIndEconomia'] and not errorColormapEco:
+    if filtros['colormapIndEconomia'] and not errorColormapEco:
         myCaption = 'Puntuación del grupo Economía/Competitividad'
         generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases, geojson)          
-    elif colormapInd['colormapIndCohesion'] and not errorColormapCohe:
+    elif filtros['colormapIndCohesion'] and not errorColormapCohe:
         myCaption = 'Puntuación del grupo Cohesión social/Calidad de vida'
         generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases, geojson)
-    elif colormapInd['colormapIndMedioambiente'] and not errorColormapMedi:
+    elif filtros['colormapIndMedioambiente'] and not errorColormapMedi:
         myCaption = 'Puntuación del grupo Medioambiente y Movilidad'
         generarColormapGrupo(mapa, rankingColormapGeneral, myCaption, geojson_fields, geojson_aliases, geojson)
     return errorApi

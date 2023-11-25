@@ -50,14 +50,7 @@ select {
 	margin-bottom: 6px;
 }
 
-.elementoFiltro {
-	margin-bottom: 3px;
-	border: 1px solid black;
-	padding: 1px;
-	background-color: #3a8ef7;
-}
-
-.elementoEv, .elementoEn {
+.elementoEv, .elementoEn, .elementoEvAd, .elementoFiltro, .elementoMet{
 	border: 1px solid black;
 	padding: 1px;
 	padding-right: 6px;
@@ -86,9 +79,19 @@ select {
 	margin-bottom: 5px;
 }
 
+#eventosAdministrativos {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
 #entidades {
 	margin-top: 5px;
-	margin-bottom: 4px;
+	margin-bottom: 5px;
+}
+
+#meteorologia {
+	margin-top: 5px;
+	margin-bottom: 2px;
 }
 
 .generarMapa, .descargarMapa {
@@ -106,6 +109,12 @@ select {
 	cursor: not-allowed;
 }
 
+.reiniciarFiltros {
+	margin-bottom: 5px;
+	font-size: 14px;
+	padding: 2px 6px;
+}
+
 .mapDiv {
 	display: inline-block;
 	position: absolute;
@@ -120,7 +129,7 @@ select {
 	visibility: hidden;
 }
 
-.botonAñadirIndicador, .botonEliminarIndicador {
+.botonAñadirIndicador, .botonEliminarIndicador, .botonReiniciarIndicadores {
 	margin-bottom: 2px;
 	font-size: 15px;
 }
@@ -169,4 +178,49 @@ select {
 .checkboxColormap:disabled {
 	filter: invert(25%);
 	cursor: not-allowed;
+}
+
+.autocomplete {
+    position: relative;
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 4px;
+    margin-bottom: 5px;
+}
+
+#txtUbicacion {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 1px;
+    font-size: 14px;
+    width: 50%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+}
+
+.autocomplete-items div {
+    padding: 4px;
+    cursor: pointer;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: #e9e9e9;
+    color: black;
 }

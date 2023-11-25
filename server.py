@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from mapa import Mapa
 import json
-import apis
 
 app = Flask(__name__)
 myMapa = Mapa()
@@ -16,9 +15,11 @@ def index():
         if tipoRequest == 'mapa':
             filtros = json.loads(dataForm['filtros'])
             añosInd = json.loads(dataForm['añosInd'])
-            colormap = json.loads(dataForm['colormap'])
             fechaIncidencia = dataForm['fechaIncidencia']
-            erroresApi = myMapa.generarMapa(filtros, añosInd, colormap, fechaIncidencia)
+            fechaMeteo = dataForm['fechaMeteo']
+            ubiMeteo = dataForm['ubiMeteo']
+            fechaMeteoUbi = dataForm['fechaMeteoUbi']            
+            erroresApi = myMapa.generarMapa(filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi)
             if len(erroresApi) > 0:
                 return jsonify(erroresApi)
             return 'mapa cargado'
@@ -67,6 +68,15 @@ def eliminarIndicador():
         descInd = bool(dataJson['ind'].split(':')[3])
         myMapa.eliminarIndicador(indicatorId, tipoInd, nombreInd, descInd)
         return 'Indicador eliminado'
+    
+@app.route('/webServiceReiniciarIndicadores')
+def reiniciarIndicadores():
+    myMapa.reiniciarIndicadores()
+    return 'Indicadores reiniciados'
+    
+@app.route('/ubiMeteoTodas.json/')
+def ubiMeteoTodas_json():
+    return render_template('ubiMeteoTodas.json')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
