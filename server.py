@@ -3,7 +3,6 @@ from flask_session import Session
 from mapa import Mapa
 import json
 import uuid
-import redis
 
 app = Flask(__name__)
 SESSION_TYPE = 'memcached'
