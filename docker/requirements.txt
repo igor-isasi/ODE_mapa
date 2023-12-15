@@ -1,4 +1,6 @@
 flask
+flask_session
+python-memcached
 requests
 folium
 pandas

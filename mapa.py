@@ -14,7 +14,8 @@ class Mapa:
         self.geojson = json.load(geojson_f)
         self.__cargarGeoJson()
 
-    def generarMapa(self, filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi):
+    def generarMapa(self, sid, filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi):
+        print(sid, flush=True)
         mapa = folium.Map(tiles="OpenStreetMap")
         geojson_fields = ['iz_ofizial']
         geojson_aliases = ['Municipio:']
