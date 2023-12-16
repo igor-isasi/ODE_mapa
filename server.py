@@ -37,12 +37,18 @@ def index():
 
 @app.route('/mapa.html/')
 def mapa_html():
-    return render_template('mapa.html')
+    idFichero = session.get('idFichero')
+    rutaFichero = 'session_maps/mapa' + str(idFichero) + '.html'
+    print(rutaFichero, flush=True)
+    if os.path.exists('templates/' + rutaFichero):
+        return render_template(rutaFichero)
+    else:
+        return render_template('mapa.html')
 
 @app.route('/indicators.json/')
 def indicators_json():
     idFichero = session.get('idFichero')
-    rutaFichero = 'session_templates/indicators' + str(idFichero) + '.json'
+    rutaFichero = 'session_indicators/indicators' + str(idFichero) + '.json'
     print(rutaFichero, flush=True)
     if os.path.exists('templates/' + rutaFichero):
         print('Existe fichero de sesión. ID: ' + str(idFichero), flush=True)
@@ -54,7 +60,7 @@ def indicators_json():
 @app.route('/extraIndicators.json/')
 def extraIndicators_json():
     idFichero = session.get('idFichero')
-    rutaFichero = 'session_templates/extraIndicators' + str(idFichero) + '.json'
+    rutaFichero = 'session_indicators/extraIndicators' + str(idFichero) + '.json'
     if os.path.exists('templates/' + rutaFichero):     
         return render_template(rutaFichero)
     else:

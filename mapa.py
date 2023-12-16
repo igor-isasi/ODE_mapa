@@ -16,7 +16,7 @@ class Mapa:
         mapa = folium.Map(tiles="OpenStreetMap")
         geojson_fields = ['iz_ofizial']
         geojson_aliases = ['Municipio:']
-        indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
+        indicators = self.__cargarIndicadores('templates/session_indicators/indicators' + str(idFichero) + '.json')
         erroresApi = []
         # Indicadores y colormap
         errorApiInd = indicadores.generarIndicadoresColormap(mapa, filtros, añosInd, geojson_fields, geojson_aliases, indicators, self.geojson)
@@ -63,12 +63,12 @@ class Mapa:
                 search_label='iz_ofizial',
                 weight=3).add_to(mapa)
         # Generar el mapa y guardarlo
-        mapa.save("templates/mapa.html")
+        mapa.save("templates/session_maps/mapa" + str(idFichero) + ".html")
         return erroresApi
 
     def añadirIndicador(self, idFichero, indId, indTipo, indName, descInd):
-        rutaFichero = 'templates/session_templates/indicators' + str(idFichero) + '.json'
-        rutaFicheroExtra = 'templates/session_templates/extraIndicators' + str(idFichero) + '.json'
+        rutaFichero = 'templates/session_indicators/indicators' + str(idFichero) + '.json'
+        rutaFicheroExtra = 'templates/session_indicators/extraIndicators' + str(idFichero) + '.json'
         # Si todavía no existen ficheros para esta sesión crearlos a partir de los base
         if not os.path.exists(rutaFichero):
             shutil.copyfile('templates/indicatorsBase.json', rutaFichero)
@@ -93,8 +93,8 @@ class Mapa:
         return(self.__cargarNuevoIndGeoJson(indId))
     
     def eliminarIndicador(self, idFichero, indId, indTipo, indName, descInd):
-        rutaFichero = 'templates/session_templates/indicators' + str(idFichero) + '.json'
-        rutaFicheroExtra = 'templates/session_templates/extraIndicators' + str(idFichero) + '.json'
+        rutaFichero = 'templates/session_indicators/indicators' + str(idFichero) + '.json'
+        rutaFicheroExtra = 'templates/session_indicators/extraIndicators' + str(idFichero) + '.json'
          # Si todavía no existen ficheros para esta sesión crearlos a partir de los base
         if not os.path.exists(rutaFichero):
             shutil.copyfile('templates/indicatorsBase.json', rutaFichero)
@@ -115,8 +115,8 @@ class Mapa:
             json.dump(extraIndicators, fExtraW)
         
     def reiniciarIndicadores(self, idFichero):
-        rutaFichero = 'templates/session_templates/indicators' + str(idFichero) + '.json'
-        rutaFicheroExtra = 'templates/session_templates/extraIndicators' + str(idFichero) + '.json'
+        rutaFichero = 'templates/session_indicators/indicators' + str(idFichero) + '.json'
+        rutaFicheroExtra = 'templates/session_indicators/extraIndicators' + str(idFichero) + '.json'
          # Si todavía no existen ficheros para esta sesión crearlos a partir de los base
         if not os.path.exists(rutaFichero):
             shutil.copyfile('templates/indicatorsBase.json', rutaFichero)
@@ -127,7 +127,7 @@ class Mapa:
 
     def getAñosInd(self, idFichero):
         añosInd = {}
-        indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
+        indicators = self.__cargarIndicadores('templates/session_indicators/indicators' + str(idFichero) + '.json')
         for ind in indicators:
             jsonInd = apiInd.getIndicator(ind)
             if jsonInd != None:
@@ -141,7 +141,7 @@ class Mapa:
     def __cargarGeoJson(self, idFichero=None):
         errorApi = False
         if idFichero != None:
-            indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
+            indicators = self.__cargarIndicadores('templates/session_indicators/indicators' + str(idFichero) + '.json')
         else:
             indicators = self.indicatorsBase
         for ind in indicators:
