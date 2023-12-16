@@ -38,6 +38,7 @@ function cargarIndicadores_generarMapa() {
 				let htmlIndicadoresEliminar = "<select class='selectIndEliminar' id='selectIndEliminar'>";
 				let ind_keys = [];
 				for (let key in indicators) {
+					console.log(key);
 					let htmlAñosInd = "";
 					ind_keys.push(key);
 					añosInd[key].reverse();
