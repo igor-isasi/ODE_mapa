@@ -7,9 +7,7 @@ from filtros import indicadores, trafico, eventos, entidades, meteorologia
 
 class Mapa:
     def __init__(self):
-        """ shutil.copyfile('templates/indicatorsBase.json', 'templates/indicators.json')
-        shutil.copyfile('templates/extraIndicatorsBase.json', 'templates/extraIndicators.json') """
-        self.indicators = self.__cargarIndicadores('templates/indicatorsBase.json')
+        self.indicatorsBase = self.__cargarIndicadores('templates/indicatorsBase.json')
         geojson_f = open('geodata/municipios.geojson')
         self.geojson = json.load(geojson_f)
         self.__cargarGeoJson()
@@ -18,9 +16,10 @@ class Mapa:
         mapa = folium.Map(tiles="OpenStreetMap")
         geojson_fields = ['iz_ofizial']
         geojson_aliases = ['Municipio:']
+        indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
         erroresApi = []
         # Indicadores y colormap
-        errorApiInd = indicadores.generarIndicadoresColormap(mapa, filtros, añosInd, geojson_fields, geojson_aliases, self.indicators, self.geojson)
+        errorApiInd = indicadores.generarIndicadoresColormap(mapa, filtros, añosInd, geojson_fields, geojson_aliases, indicators, self.geojson)
         # Trafico
         errorApiTraf = trafico.generarEventosTrafico(mapa, filtros, fechaIncidencia)
         # Eventos
@@ -83,7 +82,6 @@ class Mapa:
             indicators.update(newInd)
         with open(rutaFichero, 'w') as fW:
             json.dump(indicators, fW)
-        self.indicators[indId] = [indTipo, indName, descInd]
         # Eliminar nuevo indicador de extraIndicators.json
         with open(rutaFicheroExtra, 'r') as fExtraR:
             extraIndicators_raw = fExtraR.read()
@@ -103,9 +101,10 @@ class Mapa:
         if not os.path.exists(rutaFicheroExtra):
             shutil.copyfile('templates/extraIndicatorsBase.json', rutaFicheroExtra)
         # Eliminar indicador de indicators.json
-        del self.indicators[indId]
+        indicators = self.__cargarIndicadores(rutaFichero)
+        del indicators[indId]
         with open(rutaFichero, 'w') as fR:
-            json.dump(self.indicators, fR)
+            json.dump(indicators, fR)
         # Añadir indicador a extraIndicators.json
         newExtraInd = {indId: [indTipo, indName, descInd]}
         with open(rutaFicheroExtra, 'r') as fExtraR:
@@ -125,11 +124,11 @@ class Mapa:
             shutil.copyfile('templates/extraIndicatorsBase.json', rutaFicheroExtra)
         shutil.copyfile('templates/indicatorsBase.json', rutaFichero)
         shutil.copyfile('templates/extraIndicatorsBase.json', rutaFicheroExtra)
-        self.indicators = self.__cargarIndicadores(rutaFichero)
 
-    def getAñosInd(self):
+    def getAñosInd(self, idFichero):
         añosInd = {}
-        for ind in self.indicators:
+        indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
+        for ind in indicators:
             jsonInd = apiInd.getIndicator(ind)
             if jsonInd != None:
                 años = [list(i['years'][0].keys()) for i in jsonInd['municipalities']]
@@ -139,9 +138,13 @@ class Mapa:
                 break
         return añosInd
 
-    def __cargarGeoJson(self):
+    def __cargarGeoJson(self, idFichero=None):
         errorApi = False
-        for ind in self.indicators:
+        if idFichero != None:
+            indicators = self.__cargarIndicadores('templates/session_templates/indicators' + str(idFichero) + '.json')
+        else:
+            indicators = self.indicatorsBase
+        for ind in indicators:
             jsonInd = apiInd.getIndicator(ind)
             if jsonInd != None:
                 for indMun in jsonInd['municipalities']:
@@ -168,6 +171,10 @@ class Mapa:
         return errorApi
     
     def __cargarIndicadores(self, rutaFichero):
-        with open(rutaFichero) as f:
-            indicators_raw = f.read()
-        return json.loads(indicators_raw)
+        indicators_raw = {}
+        if os.path.exists(rutaFichero):
+            with open(rutaFichero) as f:
+                indicators_raw = f.read()
+            return json.loads(indicators_raw)
+        else:
+            return self.indicatorsBase

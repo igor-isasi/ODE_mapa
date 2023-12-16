@@ -62,7 +62,8 @@ def extraIndicators_json():
 
 @app.route('/webServiceAñosInd/')
 def getAñosInd():
-    añosInd = myMapa.getAñosInd()
+    idFichero = session.get('idFichero')
+    añosInd = myMapa.getAñosInd(idFichero)
     if añosInd != None:
         return añosInd
     else:
