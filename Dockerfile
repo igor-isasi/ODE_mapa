@@ -1,13 +1,13 @@
 FROM python:3.9
 
-WORKDIR /code
-
-COPY ./ /code
+COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
-RUN ls -l /code/*
+WORKDIR /code
+
+COPY src/ /code
 
 EXPOSE 5000
 
-CMD ["python3", "server.py"]
+CMD ["python3", "run.py"]

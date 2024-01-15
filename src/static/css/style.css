@@ -1,0 +1,226 @@
+body {
+	display: fixed; 
+}
+
+select {
+	font-size: 12px;
+}
+
+.añoFiltro {
+	margin-left: 3px;
+	margin-right: 2px;
+	font-size: 13px;
+}
+
+.filtrosDiv {
+	display: inline-block;
+	visibility: hidden;
+	position: absolute;
+	border: 2px solid black;
+	left: 0;
+	width: 24%;
+	height: 96%;
+	padding: 5px;
+	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	background-color: #60b7ff;
+	overflow: auto;
+	z-index: 1;
+	font-size: 14px;
+}
+
+.tipoFiltro {
+	font-size: 18px;
+	font-family: "Lucida Console", "Courier New", monospace;
+	background-color: burlywood;
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.grupoInd {
+	font-size: 14px;
+	background-color: bisque;
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.bloqueInd {
+	margin-top: 5px;
+	margin-bottom: 6px;
+}
+
+.elementoEv, .elementoEn, .elementoEvAd, .elementoFiltro, .elementoMet{
+	border: 1px solid black;
+	padding: 1px;
+	padding-right: 6px;
+	display: inline-block;
+	margin-bottom: 3px;
+	background-color: #3a8ef7;
+}
+
+.mostrarColormap {
+	color: #2a2826;
+	display: inline-block;
+}
+
+#indicadores {
+	margin-top: 4px;
+	margin-bottom: 8px;
+}
+
+#trafico {
+	margin-top: 5px;
+	margin-bottom: 8px;
+}
+
+#eventos {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#eventosAdministrativos {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#entidades {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#meteorologia {
+	margin-top: 5px;
+	margin-bottom: 2px;
+}
+
+.generarMapa, .descargarMapa {
+	background-color: bisque;
+	font-size: 15px;
+	padding: 5px 8px;
+	cursor: pointer;
+}
+
+.generarMapa:hover, .descargarMapa:hover {
+	background-color: burlywood;
+}
+
+.generarMapa:disabled, .descargarMapa:disabled {
+	cursor: not-allowed;
+}
+
+.reiniciarFiltros {
+	margin-bottom: 5px;
+	font-size: 14px;
+	padding: 2px 6px;
+}
+
+.mapDiv {
+	display: inline-block;
+	position: absolute;
+	height: 98%;
+	width: 74%;
+	right: 0;
+	margin-top: 5px;
+	margin-right: 5px;
+	border: 1% solid black;
+	overflow: auto;
+	z-index: 1;
+	visibility: hidden;
+}
+
+.botonAñadirIndicador, .botonEliminarIndicador, .botonReiniciarIndicadores {
+	margin-bottom: 2px;
+	font-size: 15px;
+}
+
+.popupAñadirIndicador, .popupEliminarIndicador {
+	display: none;
+	position: absolute;
+    	top: 50%;
+    	left: 50%;
+    	margin-top: -50px;
+    	margin-left: -50px;
+	border: 1px solid blue;
+	z-index: 9;
+	background-color: cornflowerblue;
+}
+
+.selectIndExtra, .selectIndEliminar {
+	width: 97%;
+}
+
+.X {
+	position: absolute;
+	background: red;
+	color: white;
+	top: -10px;
+	right: -10px;
+}
+
+.checkboxColormap {
+    width: 1em;
+    height: 1em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: sub;
+    border: 1px solid #ddd;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkboxColormap:checked {
+    background-color: gray;
+}
+
+.checkboxColormap:disabled {
+	filter: invert(25%);
+	cursor: not-allowed;
+}
+
+.autocomplete {
+    position: relative;
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 4px;
+    margin-bottom: 5px;
+}
+
+#txtUbicacion {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 1px;
+    font-size: 14px;
+    width: 50%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+}
+
+.autocomplete-items div {
+    padding: 4px;
+    cursor: pointer;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: #e9e9e9;
+    color: black;
+}
