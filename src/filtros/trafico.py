@@ -25,39 +25,50 @@ def generarEventosTrafico(mapa, filtros, fechaIncidencia):
             fg_incidencias = folium.FeatureGroup(name="incidencias")
             for jsonInc in listaJsonIncidencias:
                 for inc in jsonInc['incidences']:
-                    diaInicio = datetime.strptime(inc['startDate'].split('T')[0], "%Y-%m-%d").strftime('%d-%m-%Y')
-                    diaFin = datetime.strptime(inc['endDate'].split('T')[0], "%Y-%m-%d").strftime('%d-%m-%Y')
-                    if 'endDate' in inc and tieneHoraAsignada:
-                        myIFrame = folium.IFrame(
-                            '<font color="red">INCIDENCIA</font>' + 
-                            '<br><br><strong>Día de inicio:</strong> ' + diaInicio + 
-                            '<br><br><strong>Hora de inicio:</strong> ' + inc['startDate'].split('T')[1] + 
-                            '<br><br><strong>Día de fin:</strong> ' + diaFin + 
-                            '<br><br><strong>Hora de fin:</strong> ' + inc['endDate'].split('T')[1] + 
-                            '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
-                            '<br><br><strong>Causa:</strong> ' + inc['cause'])
-                    elif 'endDate' in inc and not tieneHoraAsignada and diaInicio == diaFin:
-                        myIFrame = folium.IFrame(
-                            '<font color="red">INCIDENCIA</font>' + 
-                            '<br><br><strong>Día:</strong> ' + diaInicio + 
-                            '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
-                            '<br><br><strong>Causa:</strong> ' + inc['cause'])
-                    elif 'endDate' not in inc and tieneHoraInicio:
-                        myIFrame = folium.IFrame(
-                            '<font color="red">INCIDENCIA</font>' + 
-                            '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
-                            '<br><br><strong>Hora:</strong> ' + inc['startDate'].split('T')[1] + 
-                            '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
-                            '<br><br><strong>Causa:</strong> ' + inc['cause'])
-                    else:
-                        myIFrame = folium.IFrame(
-                            '<font color="red">INCIDENCIA</font>' + 
-                            '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
-                            '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
-                            '<br><br><strong>Causa:</strong> ' + inc['cause'])
-                    myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
-                    myIcon = folium.Icon(color='red', icon='car', prefix='fa')
-                    folium.Marker(location=[inc['latitude'], inc['longitude']],popup = myPopup, icon = myIcon).add_to(fg_incidencias)
+                    try:
+                        diaInicio = datetime.strptime(inc['startDate'].split('T')[0], "%Y-%m-%d").strftime('%d-%m-%Y')
+                        if 'endDate' in inc:
+                            diaFin = datetime.strptime(inc['endDate'].split('T')[0], "%Y-%m-%d").strftime('%d-%m-%Y')
+                            if tieneHoraAsignada(inc):
+                                myIFrame = folium.IFrame(
+                                    '<font color="red">INCIDENCIA</font>' + 
+                                    '<br><br><strong>Día de inicio:</strong> ' + diaInicio + 
+                                    '<br><br><strong>Hora de inicio:</strong> ' + inc['startDate'].split('T')[1] + 
+                                    '<br><br><strong>Día de fin:</strong> ' + diaFin + 
+                                    '<br><br><strong>Hora de fin:</strong> ' + inc['endDate'].split('T')[1] + 
+                                    '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
+                                    '<br><br><strong>Causa:</strong> ' + inc['cause'])
+                            elif not tieneHoraAsignada(inc) and diaInicio != diaFin:
+                                myIFrame = folium.IFrame(
+                                    '<font color="red">INCIDENCIA</font>' + 
+                                    '<br><br><strong>Día de inicio:</strong> ' + diaInicio + 
+                                    '<br><br><strong>Día de fin:</strong> ' + diaFin + 
+                                    '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
+                                    '<br><br><strong>Causa:</strong> ' + inc['cause'])
+                            else:
+                                myIFrame = folium.IFrame(
+                                '<font color="red">INCIDENCIA</font>' + 
+                                '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
+                                '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
+                                '<br><br><strong>Causa:</strong> ' + inc['cause'])
+                        elif tieneHoraInicio(inc):
+                            myIFrame = folium.IFrame(
+                                '<font color="red">INCIDENCIA</font>' + 
+                                '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
+                                '<br><br><strong>Hora:</strong> ' + inc['startDate'].split('T')[1] + 
+                                '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
+                                '<br><br><strong>Causa:</strong> ' + inc['cause'])
+                        else:
+                            myIFrame = folium.IFrame(
+                                '<font color="red">INCIDENCIA</font>' + 
+                                '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
+                                '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
+                                '<br><br><strong>Causa:</strong> ' + inc['cause'])
+                        myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
+                        myIcon = folium.Icon(color='red', icon='car', prefix='fa')
+                        folium.Marker(location=[inc['latitude'], inc['longitude']],popup = myPopup, icon = myIcon).add_to(fg_incidencias)
+                    except:
+                        print('no se ha incluido la incidencia ' + str(inc) + ' por falta de informacion', flush=True)
             fg_incidencias.add_to(mapa)
         else:
             errorApi = 'API de tráfico'
