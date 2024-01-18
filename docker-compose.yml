@@ -4,10 +4,16 @@ services:
     secrets:
       - euskalmet_private_apikey
       - euskalmet_fingerprint
+      - ssl_cert
+      - ssl_key
     ports:
-      - "80:5000"
+      - "443:5000"
 secrets:
   euskalmet_private_apikey:
     file: ../EuskalmetAPI/privateKey.pem
   euskalmet_fingerprint:
     file: ../EuskalmetAPI/fingerPrint.txt
+  ssl_cert:
+    file: ../odemapa_ssl/cert.pem
+  ssl_key:
+    file: ../odemapa_ssl/privkey.pem
