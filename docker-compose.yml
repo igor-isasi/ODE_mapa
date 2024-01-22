@@ -8,6 +8,13 @@ services:
       - ssl_key
     ports:
       - "443:5000"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1.5G
+    memswap_limit: 40G
 secrets:
   euskalmet_private_apikey:
     file: ../EuskalmetAPI/privateKey.pem

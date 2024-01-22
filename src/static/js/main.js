@@ -182,9 +182,10 @@ function cargarIndicadoresExtra() {
 }
 
 export function añadirIndicador() {
-	Filtros.bloquearFiltros();
 	let indicator = document.getElementById('selectIndExtra').value;
+	console.log(indicator);
 	if (indicator != "") {
+		Filtros.bloquearFiltros();
 		let postData = {ind: indicator, tipoRequest: 'añadirIndicador'};
 		fetch('/webServiceAñadirIndicador', {
 			headers: {
@@ -204,13 +205,15 @@ export function añadirIndicador() {
 			}
 			
 		});
+	} else {
+		alert('No se ha seleccionado ningún indicador.')
 	}
 }
 
 export function eliminarIndicador() {
-	Filtros.bloquearFiltros();
 	let indicator = document.getElementById('selectIndEliminar').value;
 	if (indicator != "") {
+		Filtros.bloquearFiltros();
 		let postData = {ind: indicator, tipoRequest: 'eliminarIndicador'};
 		fetch('/webServiceEliminarIndicador', {
 			headers: {
@@ -230,6 +233,8 @@ export function eliminarIndicador() {
 			}
 
 		});
+	} else {
+		alert('No se ha seleccionado ningún indicador.')
 	}
 }
 
