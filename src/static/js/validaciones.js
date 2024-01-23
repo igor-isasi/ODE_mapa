@@ -35,7 +35,7 @@ function validarFechaMeteo(fecha) {
 		if (!fecha || Date.parse(fecha) < Date.parse(getFechaActual()) || Date.parse(fecha) > Date.parse(getFechaMaxMeteo())) {
 			validado = false;
 			mensaje = "\n - La fecha de la predicción metereológica debe ser mayor o igual que la fecha " + 
-				Filtros.getFechaEsp(getFechaActual()) + " y menor que la fecha " + Filtros.getFechaEsp(getFechaMaxMeteo()) + ".";
+				getFechaEsp(getFechaActual()) + " y menor o igual que la fecha " + getFechaEsp(getFechaMaxMeteo()) + ".";
 		}
 	}
 	return [validado, mensaje];
@@ -47,7 +47,8 @@ function validarFechaMeteoUbi(fecha) {
 	if (document.getElementById('filtroMetPredUbi').checked) {
 		if (!fecha || Date.parse(fecha) > Date.parse(getFechaMaxMeteo()) || Date.parse(fecha) < Date.parse(getFechaActual())) {
 			validado = false;
-			mensaje = "\n - La fecha de la predicción metereológica por ubicación debe ser mayor o igual que la fecha " + getFechaActual() + " y menor que la fecha " + getFechaMaxMeteo() + ".";
+			mensaje = "\n - La fecha de la predicción metereológica por ubicación debe ser mayor o igual que la fecha " +
+				getFechaActual() + " y menor o igual que la fecha " + getFechaMaxMeteo() + ".";
 		}
 	}
 	return [validado, mensaje];

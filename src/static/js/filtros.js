@@ -18,7 +18,6 @@ export function inicializarFiltros() {
 	Fechas.setFechaIncidencia();
 	Fechas.setFechaMeteo('fechaMeteo');
 	Fechas.setFechaMeteo('fechaMeteoUbi');
-	//setFechaEventosAdmin();
 	// Si se marca un colormap que se desmarquen los demás colormap
 	let colormapSeleccionado = false;
 	Array.from(document.querySelectorAll('.checkboxColormap')).forEach(function(checkboxColormap) {
