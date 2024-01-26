@@ -12,7 +12,7 @@ function main() {
 }
 
 function cargarIndicadores_generarMapa() {
-	// Cargar los años de los indicadores desde un web service que saca la info de la base de datos
+	// Cargar los años de los indicadores desde un web service
 	fetch('../webServiceAñosInd')
 	.then(response => {
 		let contentType = response.headers.get("content-type");
