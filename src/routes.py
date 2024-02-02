@@ -36,13 +36,19 @@ def index():
 
 @routes.route('/mapa.html/')
 def mapa_html():
-    idFichero = session.get('idFichero')
+    mapaSesion = mapas[session.get('idFichero')]
+    if mapaSesion != None:
+        mapaSesion.mapa.save('templates/mapa.html')
+
+    """ idFichero = session.get('idFichero')
     rutaFichero = 'session_maps/mapa' + str(idFichero) + '.html'
     print(rutaFichero, flush=True)
     if os.path.exists('templates/' + rutaFichero):
         return render_template(rutaFichero)
     else:
-        return render_template('mapa.html')
+        return render_template('mapa.html') """
+    
+    return render_template('mapa.html')
 
 @routes.route('/indicators.json/')
 def indicators_json():

@@ -8,3 +8,4 @@ pyproj
 PyJWT
 geopy
 cryptography
+mysql-connector-python
