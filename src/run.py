@@ -1,7 +1,6 @@
 from flask import Flask
 from routes import routes
 import uuid
-import subprocess
 
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex

@@ -11,7 +11,6 @@ def before_app_request():
     if session.get('idFichero') == None:
         session['idFichero'] = uuid.uuid4()
         mapas[session.get('idFichero')] = Mapa(session.get('idFichero'))
-        print('Se ha añadido mapa: ' + str(mapas), flush=True)
         session.permanent = True
 
 @routes.route('/', methods=['GET', 'POST'])
@@ -39,27 +38,15 @@ def mapa_html():
     mapaSesion = mapas[session.get('idFichero')]
     if mapaSesion != None:
         mapaSesion.mapa.save('templates/mapa.html')
-
-    """ idFichero = session.get('idFichero')
-    rutaFichero = 'session_maps/mapa' + str(idFichero) + '.html'
-    print(rutaFichero, flush=True)
-    if os.path.exists('templates/' + rutaFichero):
-        return render_template(rutaFichero)
-    else:
-        return render_template('mapa.html') """
-    
     return render_template('mapa.html')
 
 @routes.route('/indicators.json/')
 def indicators_json():
     idFichero = session.get('idFichero')
     rutaFichero = 'session_indicators/indicators' + str(idFichero) + '.json'
-    print(rutaFichero, flush=True)
     if os.path.exists('templates/' + rutaFichero):
-        print('Existe fichero de sesión. ID: ' + str(idFichero), flush=True)
         return render_template(rutaFichero)
     else:
-        print('No existe fichero de sesión', flush=True)
         return render_template('indicatorsBase.json')
 
 @routes.route('/extraIndicators.json/')

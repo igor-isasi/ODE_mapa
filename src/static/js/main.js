@@ -119,7 +119,7 @@ export function generarMapa() {
 		}).then(res => {
 			const promiseMapa = new Promise((resolve) => {
 				document.getElementById('mapa').innerHTML = '<iframe src="mapa.html/" height="99%" width="99%"></iframe>';
-				setTimeout(() => resolve("Mapa cargado correctamente"), 4500)
+				setTimeout(() => resolve("Mapa cargado correctamente"),10000)
 			});
 			if (res == "mapa cargado") {
 				promiseMapa.then((resolveMessage) => {

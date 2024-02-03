@@ -3,7 +3,6 @@ from folium.plugins import Search, Fullscreen
 from apis import apiIndicadores as apiInd
 import json
 from filtros import indicadores, trafico, eventos, entidades, meteorologia
-import mysql.connector
 
 class Mapa:
     def __init__(self, idFichero):
@@ -11,19 +10,6 @@ class Mapa:
         geojson_f = open('geodata/municipios.geojson')
         self.geojson = json.load(geojson_f)
         self.__cargarGeoJson()
-        """ cnx = mysql.connector.connect(user='dbmasteruser', password='^t(%9y8t)8`=|J,4FK!BBpHu.Tzr.(dw',
-                              host='ls-efb9cfc45a9ff44285d2b073d8ae468a8e23affd.clyyqaiaap7c.eu-west-3.rds.amazonaws.com')
-        cursor = cnx.cursor()
-        try:
-            cursor.execute('DROP DATABASE IF EXISTS odemapa')
-            cursor.execute('CREATE DATABASE odemapa')
-            cursor.execute('USE odemapa')
-        except:
-            print('Ha ocurrido un error con la base de datos')
-        cursor.execute('SHOW DATABASES')
-        for db in cursor:
-            print(db[0], flush=True)
-        cnx.close() """
 
     def generarMapa(self, filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi):
         self.mapa = folium.Map(tiles="OpenStreetMap")
