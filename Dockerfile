@@ -8,6 +8,6 @@ WORKDIR /code
 
 COPY src/ /code
 
-EXPOSE 5000
+EXPOSE 8000
 
-CMD ["python3", "run.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]

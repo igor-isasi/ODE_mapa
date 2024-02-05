@@ -1,5 +1,5 @@
-templates/mapa.html
-__pycache__/*
-apis/__pycache__/*
-filtros/__pycache__/*
+src/templates/mapa.html
+src/__pycache__/*
+src/apis/__pycache__/*
+src/filtros/__pycache__/*
 pruebas/
