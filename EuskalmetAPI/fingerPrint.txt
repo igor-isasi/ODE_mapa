@@ -1,0 +1,3 @@
+Este es un archivo falso. Para poder utilizar los filtros de meteorología crea una cuenta en
+https://api.euskadi.eus/met01uiLoginWar/?to=https://api.euskadi.eus/met01uiApiKeyUsersWar/index.jsp#/ ,
+solicita nueva API-KEY y reemplaza este fichero por el fichero fingerPrint.txt descargado en el zip.

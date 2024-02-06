@@ -21,9 +21,9 @@ services:
 
 secrets:
   euskalmet_private_apikey:
-    file: ../EuskalmetAPI/privateKey.pem
+    file: ./EuskalmetAPI/privateKey.pem
   euskalmet_fingerprint:
-    file: ../EuskalmetAPI/fingerPrint.txt
+    file: ./EuskalmetAPI/fingerPrint.txt
 
 networks:
   docker-network:
