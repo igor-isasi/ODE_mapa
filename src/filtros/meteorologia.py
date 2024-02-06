@@ -7,6 +7,7 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 
 def generarPrediccionMeteo(mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi):
     errorApi = None
+    errorGeopy = None
     if filtros['filtroMetPred']:
         fg_predicciones = folium.FeatureGroup(name='predicciones meteorológicas')
         with open('templates/ubiMeteoPrincipales.json') as f:
@@ -16,7 +17,7 @@ def generarPrediccionMeteo(mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi):
             for location in zoneJson['locations']:
                 jsonPrediccion = api.getPrediccionSemanal(zoneJson['zone'], location, fechaMeteo)
                 if jsonPrediccion != None:
-                    añadirPrediccion(jsonPrediccion, fg_predicciones, location, fechaMeteo)
+                    errorGeopy = añadirPrediccion(jsonPrediccion, fg_predicciones, location, fechaMeteo)
                 else:
                     errorApi = "API de Euskalmet"
         fg_predicciones.add_to(mapa)
@@ -28,11 +29,11 @@ def generarPrediccionMeteo(mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi):
         zone = ubicacionesJson[ubiMeteo]
         jsonPrediccion = api.getPrediccionSemanal(zone, ubiMeteo, fechaMeteoUbi)
         if jsonPrediccion != None:
-            añadirPrediccion(jsonPrediccion, fg_predicciones, ubiMeteo, fechaMeteoUbi)
+            errorGeopy = añadirPrediccion(jsonPrediccion, fg_predicciones, ubiMeteo, fechaMeteoUbi)
         else:
             errorApi = "API de Euskalmet"
         fg_predicciones.add_to(mapa)
-    return errorApi
+    return errorApi, errorGeopy
 
 def añadirPrediccion(jsonPrediccion, fg, location, fechaMeteo):
     for diaPred in jsonPrediccion['trendsByDate']['set']:
@@ -49,7 +50,10 @@ def añadirPrediccion(jsonPrediccion, fg, location, fechaMeteo):
             myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
             myIcon = folium.features.CustomIcon('https://api.euskadi.eus/' + diaPred['weather']['path'], icon_size=(50,50))
             getLoc = do_geocode(location)
-            folium.Marker(location=[getLoc.latitude, getLoc.longitude], popup = myPopup, icon = myIcon).add_to(fg)
+            if getLoc != None and getLoc.latitude < 45 and getLoc.latitude > 42 and getLoc.longitude < 0:
+                folium.Marker(location=[getLoc.latitude, getLoc.longitude], popup = myPopup, icon = myIcon).add_to(fg)
+            else:
+                return "No se han podido obtener las coordenadas de alguna(s) ubicación(es) seleccionada(s) para las predicciones meteorológicas."
 
 def do_geocode(address, attempt=1, max_attempts=5):
     try:
@@ -58,4 +62,5 @@ def do_geocode(address, attempt=1, max_attempts=5):
     except (GeocoderTimedOut, GeocoderUnavailable):
         if attempt <= max_attempts:
             return do_geocode(address, attempt=attempt+1)
-        raise
+        else:
+            return None

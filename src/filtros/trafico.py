@@ -13,7 +13,7 @@ def generarEventosTrafico(mapa, filtros, fechaIncidencia):
             fg_camaras = folium.FeatureGroup(name="camaras")
             for jsonCamara in listaJsonCamaras:
                 for camara in jsonCamara['cameras']:
-                    if float(camara['latitude']) < 45 and float(camara['longitude']) < 0:
+                    if float(camara['latitude']) < 45 and float(camara['latitude']) > 42 and float(camara['longitude']) < 0:
                         myIcon = folium.Icon(color='red', icon='video-camera', prefix='fa')
                         folium.Marker(location=[camara['latitude'], camara['longitude']], icon = myIcon).add_to(fg_camaras)
             fg_camaras.add_to(mapa)
@@ -64,9 +64,10 @@ def generarEventosTrafico(mapa, filtros, fechaIncidencia):
                                 '<br><br><strong>Día:</strong> ' + inc['startDate'].split('T')[0] + 
                                 '<br><br><strong>Tipo:</strong> ' + inc['incidenceType'] + 
                                 '<br><br><strong>Causa:</strong> ' + inc['cause'])
-                        myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
-                        myIcon = folium.Icon(color='red', icon='car', prefix='fa')
-                        folium.Marker(location=[inc['latitude'], inc['longitude']],popup = myPopup, icon = myIcon).add_to(fg_incidencias)
+                        if float(inc['latitude']) < 45 and float(inc['latitude']) > 42 and float(inc['longitude']) < 0:
+                            myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
+                            myIcon = folium.Icon(color='red', icon='car', prefix='fa')
+                            folium.Marker(location=[inc['latitude'], inc['longitude']],popup = myPopup, icon = myIcon).add_to(fg_incidencias)
                     except:
                         print('no se ha incluido la incidencia ' + str(inc) + ' por falta de informacion', flush=True)
             fg_incidencias.add_to(mapa)

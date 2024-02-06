@@ -28,9 +28,9 @@ def index():
             ubiMeteo = dataForm['ubiMeteo']
             fechaMeteoUbi = dataForm['fechaMeteoUbi']
             mapaSesion = mapas[session.get('idFichero')]
-            erroresApi = mapaSesion.generarMapa(filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi)
-            if len(erroresApi) > 0:
-                return jsonify(erroresApi)
+            errores = mapaSesion.generarMapa(filtros, añosInd, fechaIncidencia, fechaMeteo, ubiMeteo, fechaMeteoUbi)
+            if len(errores) > 0:
+                return jsonify(errores)
             return 'mapa cargado'
 
 @routes.route('/mapa.html/')

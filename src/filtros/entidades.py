@@ -4,11 +4,12 @@ from pyproj import Transformer
 
 def generarEntidades(mapa, filtros):
     errorApi = None
+    errorPyproj = None
     if filtros['filtroEnSanitarios'] or filtros['filtroTodosEn']:
         jsonEntidades = api.getCentrosSanitarios()
         if jsonEntidades != None:
             fg_centrosSanitarios = folium.FeatureGroup(name='centros sanitarios')
-            añadirEntidades(jsonEntidades['pageItems'], fg_centrosSanitarios)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_centrosSanitarios)
             fg_centrosSanitarios.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
@@ -16,7 +17,7 @@ def generarEntidades(mapa, filtros):
         jsonEntidades = api.getEntidadesReligiosas()
         if jsonEntidades != None:
             fg_entidadesReligiosas = folium.FeatureGroup(name='entidades religiosas')
-            añadirEntidades(jsonEntidades['pageItems'], fg_entidadesReligiosas)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_entidadesReligiosas)
             fg_entidadesReligiosas.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
@@ -24,7 +25,7 @@ def generarEntidades(mapa, filtros):
         jsonEntidades = api.getEntidadesLegislativas()
         if jsonEntidades != None:
             fg_entidadesLegislativas = folium.FeatureGroup(name='entidades legislativas')
-            añadirEntidades(jsonEntidades['pageItems'], fg_entidadesLegislativas)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_entidadesLegislativas)
             fg_entidadesLegislativas.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
@@ -32,7 +33,7 @@ def generarEntidades(mapa, filtros):
         jsonEntidades = api.getEntidadesJudiciales()
         if jsonEntidades != None:
             fg_entidadesJudiciales = folium.FeatureGroup(name='entidades judiciales')
-            añadirEntidades(jsonEntidades['pageItems'], fg_entidadesJudiciales)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_entidadesJudiciales)
             fg_entidadesJudiciales.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
@@ -40,7 +41,7 @@ def generarEntidades(mapa, filtros):
         jsonEntidades = api.getEntidadesPartidos()
         if jsonEntidades != None:
             fg_entidadesPartidos = folium.FeatureGroup(name='entidades de partidos políticos')
-            añadirEntidades(jsonEntidades['pageItems'], fg_entidadesPartidos)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_entidadesPartidos)
             fg_entidadesPartidos.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
@@ -48,16 +49,17 @@ def generarEntidades(mapa, filtros):
         jsonEntidades = api.getFundaciones()
         if jsonEntidades != None:
             fg_fundaciones = folium.FeatureGroup(name='fundaciones')
-            añadirEntidades(jsonEntidades['pageItems'], fg_fundaciones)
+            errorPyproj = añadirEntidades(jsonEntidades['pageItems'], fg_fundaciones)
             fg_fundaciones.add_to(mapa)
         else:
             errorApi = 'API de personas, entidades y equipamientos'
-    return errorApi
+    return errorApi, errorPyproj
     
 def añadirEntidades(jsonEntidades, fg):
     myIFrame = None
     myIcon = None
     myPopup = None
+    errorPyproj = None
     for entidad in jsonEntidades:
         if 'geoPosition' in entidad and entidad['geoPosition']['country']['oid'] == '108' and \
             (entidad['geoPosition']['county']['oid'] == '01' or entidad['geoPosition']['county']['oid'] == '20' \
@@ -68,10 +70,17 @@ def añadirEntidades(jsonEntidades, fg):
             myPopup = folium.Popup(myIFrame, min_width=300, max_width=500)
             myIcon = getIconoEntidad(entidad)
             if entidad['geoPosition']['position2D']['standard'] == 'ETRS89':
-                lat, long = convertirCoords(entidad['geoPosition']['position2D']['x'], entidad['geoPosition']['position2D']['y'])
+                try:
+                    lat, long = convertirCoords(entidad['geoPosition']['position2D']['x'], entidad['geoPosition']['position2D']['y'])
+                    if float(lat) < 45 and float(lat) > 42 and float(long) < 0:
+                        folium.Marker(location=[lat, long], popup = myPopup, icon = myIcon).add_to(fg)
+                except:
+                    errorPyproj = "Ha ocurrido un error al traducir las coordenadas de alguna(s) entidad(es)."
             else:
                 lat, long = entidad['geoPosition']['position2D']['x'], entidad['geoPosition']['position2D']['y']
-            folium.Marker(location=[lat, long], popup = myPopup, icon = myIcon).add_to(fg)
+                if float(lat) < 45 and float(lat) > 42 and float(long) < 0:
+                    folium.Marker(location=[lat, long], popup = myPopup, icon = myIcon).add_to(fg)
+    return errorPyproj
 
 def getIconoEntidad(entidad):
     myIcon = folium.Icon(color='gray', icon='question', prefix='fa')
@@ -90,7 +99,10 @@ def getIconoEntidad(entidad):
     return myIcon
 
 def convertirCoords(utm_x, utm_y):
-    huso = 30
-    transformer = Transformer.from_crs({'proj': "utm", 'zone': huso}, {'proj': 'longlat'})
-    long,lat = transformer.transform(utm_x, utm_y)
-    return lat,long
+    try:
+        huso = 30
+        transformer = Transformer.from_crs({'proj': "utm", 'zone': huso}, {'proj': 'longlat'})
+        long,lat = transformer.transform(utm_x, utm_y)
+        return lat,long
+    except:
+        raise

@@ -16,30 +16,32 @@ class Mapa:
         geojson_fields = ['iz_ofizial']
         geojson_aliases = ['Municipio:']
         indicators = indicadores.cargarIndicadoresSesion(self.idFichero)
-        erroresApi = []
+        errores = []
         # Indicadores y colormap
         errorApiInd = indicadores.generarIndicadoresColormap(self.mapa, filtros, añosInd, geojson_fields, geojson_aliases, indicators, self.geojson)
         # Trafico
         errorApiTraf = trafico.generarEventosTrafico(self.mapa, filtros, fechaIncidencia)
         # Eventos
         errorApiEv = eventos.generarEventosGenerales(self.mapa, filtros)
-        # Eventos administrativos
-        #errorApiEvAd = eventosAdmin.generarEventosAdmin(mapa, filtros, fechaEventosAdmin)
         # Entidades
-        errorApiEnt = entidades.generarEntidades(self.mapa, filtros)
+        errorApiEnt, errorPyproj = entidades.generarEntidades(self.mapa, filtros)
         # Meteorologia
-        errorApiMet = meteorologia.generarPrediccionMeteo(self.mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi)
+        errorApiMet, errorGeopy = meteorologia.generarPrediccionMeteo(self.mapa, filtros, fechaMeteo, ubiMeteo, fechaMeteoUbi)
         # Comprobar si ha habido error con las APIs en cualquiera de las solicitudes
         if errorApiInd != None:
-            erroresApi.append(errorApiInd)
+            errores.append(errorApiInd)
         if errorApiTraf != None:
-            erroresApi.append(errorApiTraf)
+            errores.append(errorApiTraf)
         if errorApiEv != None:
-            erroresApi.append(errorApiEv)
+            errores.append(errorApiEv)
         if errorApiEnt != None:
-            erroresApi.append(errorApiEnt)
+            errores.append(errorApiEnt)
         if errorApiMet != None:
-            erroresApi.append(errorApiMet)
+            errores.append(errorApiMet)
+        if errorGeopy != None:
+            errores.append(errorGeopy)
+        if errorPyproj != None:
+            errores.append(errorPyproj)
         # Generar geojson con la informacion y añadir plugins
         geo = folium.GeoJson(
             self.geojson, 
@@ -61,9 +63,7 @@ class Mapa:
                 collapsed=False,
                 search_label='iz_ofizial',
                 weight=3).add_to(self.mapa)
-        # Generar el mapa y guardarlo
-        #mapa.save("templates/session_maps/mapa" + str(self.idFichero) + ".html")
-        return erroresApi
+        return errores
 
     def __cargarGeoJson(self):
         errorApi = False

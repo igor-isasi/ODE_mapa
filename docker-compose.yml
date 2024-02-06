@@ -1,20 +1,30 @@
 services:
-  web:
+  app:
     build: .
     secrets:
       - euskalmet_private_apikey
       - euskalmet_fingerprint
+    expose:
+      - "8000"
+    networks:
+      - docker-network 
+    command: gunicorn --bind 0.0.0.0:8000 wsgi:app --timeout 180
+  
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "8000:8000"
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1.5G
-    memswap_limit: 40G
+      - "80:80"
+    networks:
+      - docker-network
+
 secrets:
   euskalmet_private_apikey:
     file: ../EuskalmetAPI/privateKey.pem
   euskalmet_fingerprint:
     file: ../EuskalmetAPI/fingerPrint.txt
+
+networks:
+  docker-network:
+

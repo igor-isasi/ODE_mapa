@@ -132,10 +132,18 @@ export function generarMapa() {
 				let strErrores = "";
 				let errorIndicadores = false;
 				let errorMeteo = false;
+				let erroresApi = []
 				for (let error of res) {
 					if (error == "API de indicadores municipales") errorIndicadores = true;
 					if (error == "API de Euskalmet") errorMeteo = true;
-					strErrores = strErrores + error + ", ";
+					if (error == "No se han podido obtener las coordenadas de alguna(s) ubicación(es) seleccionada(s) para las predicciones meteorológicas.") {
+						alert(error);
+					} else if (error == "Ha ocurrido un error al traducir las coordenadas de alguna(s) entidad(es).") {
+						alert(error);
+					} else { 
+						erroresApi.push(error);
+						strErrores = strErrores + error + ", ";
+					}
 				}
 				strErrores = strErrores.split(',').slice(0, -1) + ".";
 				if (errorIndicadores) {
@@ -143,11 +151,11 @@ export function generarMapa() {
 					"\nNo es posible cargar la página.");
 					let html = "<h1>No se ha podido cargar la página</h1>";
 					document.getElementsByTagName('body')[0].innerHTML = html;
-				} else if (res.length >= 2) {
+				} else if (erroresApi.length >= 2) {
 					let mensaje = "Ha ocurrido un error al solicitar información de las siguientes APIs: " + strErrores + 
 					"\nEs posible que la información relacionada con estas APIs no se muestre en el mapa.";
 					alert(mensaje);
-				} else if (res.length > 0) {
+				} else if (erroresApi.length > 0) {
 					if (errorMeteo) {
 						let mensaje = "Ha ocurrido un error al solicitar información de la API de Euskalmet." +  
 						" Probablemente el error se debe a que todavía no está disponible la predicción para la fecha solicitada." + 
@@ -183,8 +191,8 @@ function cargarIndicadoresExtra() {
 
 export function añadirIndicador() {
 	let indicator = document.getElementById('selectIndExtra').value;
-	console.log(indicator);
 	if (indicator != "") {
+		Filtros.reiniciarFiltros();
 		Filtros.bloquearFiltros();
 		let postData = {ind: indicator, tipoRequest: 'añadirIndicador'};
 		fetch('/webServiceAñadirIndicador', {
@@ -213,6 +221,7 @@ export function añadirIndicador() {
 export function eliminarIndicador() {
 	let indicator = document.getElementById('selectIndEliminar').value;
 	if (indicator != "") {
+		Filtros.reiniciarFiltros();
 		Filtros.bloquearFiltros();
 		let postData = {ind: indicator, tipoRequest: 'eliminarIndicador'};
 		fetch('/webServiceEliminarIndicador', {
