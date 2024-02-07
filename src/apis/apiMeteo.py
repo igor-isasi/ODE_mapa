@@ -16,11 +16,7 @@ def getPrediccionSemanal(zoneId, locId, fecha):
     if token != None:
         qUrl = "https://api.euskadi.eus/euskalmet/weather/regions/basque_country/zones/" + zoneId + "/locations/" + locId + "/forecast/trends/at/" + str(añoActual) + "/" + str(mesActual) + "/" + str(diaActual) + "/for/" + str(año) + str(mes) + str(dia)
         qHeaders = {'accept': 'application/json', 'Authorization' : 'Bearer ' + token}
-        response = requests.get(url=qUrl, headers=qHeaders)
-        if response.ok:
-            myJson = response.json()
-        else:
-            myJson = None
+        myJson = getJson(qUrl, qHeaders)
     else:
         myJson = None
     return myJson
@@ -47,3 +43,14 @@ def generarToken():
         return token
     except:
         return None
+    
+def getJson(qUrl, qHeaders):
+    try:
+        response = requests.get(url=qUrl, headers=qHeaders, timeout=10)
+        if response.ok:
+            myJson = response.json()
+        else:
+            myJson = None
+    except:
+        myJson = None
+    return myJson
