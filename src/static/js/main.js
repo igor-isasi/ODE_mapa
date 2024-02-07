@@ -278,7 +278,7 @@ export function descargarMapa() {
 	const aElement = document.createElement('a');
 	aElement.setAttribute('download', 'ODE_mapa');
 	let mapa = document.getElementById('mapaIframe').srcdoc;
-	var mapaBlob = new Blob([mapa], {type: "text/plain"});
+	var mapaBlob = new Blob([mapa], {type: "text/html"});
 	const href = URL.createObjectURL(mapaBlob);
 	aElement.href = href;
 	aElement.setAttribute('target', '_blank');
