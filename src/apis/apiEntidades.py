@@ -1,16 +1,5 @@
 import requests
 
-""" def getEntidad(nombre):
-    qUrl = "https://api.euskadi.eus/directory/entities"
-    qParams = {'pageSize': 100, 'filterBy': nombre}
-    qHeaders = {'accept': 'application/json'}
-    response = requests.get(url=qUrl, params=qParams, headers=qHeaders)
-    if response.ok:
-        myJson = response.json()
-    else:
-        myJson = None
-    return myJson """
-
 def getCentrosSanitarios():
     qUrl = "https://api.euskadi.eus/directory/entities"
     qParams = {'pageSize': 100, 'subType': 'HEALTH'}
