@@ -96,6 +96,10 @@
 				</div>
 					<button class="botonSubmitIndicador" id="botonSubmitEliminarIndicador"> Eliminar indicador</button>
 			</div>
+
+			<div class="popupCargandoMapa" id="popupCargandoMapa">
+				Cargando mapa...
+			</div>
 		</div>
 
 		<div class="windows8" id="loadingDiv">
@@ -116,7 +120,9 @@
 			</div>
 		</div>
 
-		<div class="mapDiv" id="mapa"></div>
+		<div class="mapDiv" id="mapa">
+			<iframe id="mapaIframe" height="99%" width="99%"></iframe>
+		</div>
 
 		<script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 	</body>

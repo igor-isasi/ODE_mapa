@@ -13,7 +13,7 @@ function main() {
 
 function cargarIndicadores_generarMapa() {
 	// Cargar los años de los indicadores desde un web service
-	fetch('../webServiceAñosInd')
+	fetch('/webServiceAñosInd')
 	.then(response => {
 		let contentType = response.headers.get("content-type");
 		if (contentType == "application/json") return response.json();
@@ -26,7 +26,7 @@ function cargarIndicadores_generarMapa() {
     		document.getElementsByTagName('body')[0].innerHTML = html; 
 		} else {
 			// Cargar los indicadores desde el fichero indicators.json
-			fetch('../indicators.json')
+			fetch('/indicators.json')
 			.then(response => response.json())
 			.then(indicators => {
 				let hayIndEconomia = false;
@@ -118,8 +118,13 @@ export function generarMapa() {
 			else return response.text();
 		}).then(res => {
 			const promiseMapa = new Promise((resolve) => {
-				document.getElementById('mapa').innerHTML = '<iframe src="mapa.html/" height="99%" width="99%"></iframe>';
-				setTimeout(() => resolve("Mapa cargado correctamente"),10000)
+				fetch('/mapa.html').then(res => res.text()
+				).then(html => {
+					document.getElementById('mapaIframe').addEventListener("load", () => {
+						resolve("Mapa cargado correctamente");
+					});
+					document.getElementById('mapaIframe').srcdoc = html;
+				});
 			});
 			if (res == "mapa cargado") {
 				promiseMapa.then((resolveMessage) => {
@@ -177,7 +182,7 @@ export function generarMapa() {
 
 function cargarIndicadoresExtra() {
 	// Cargar los indicadores extra desde el fichero extraIndicators.json
-	fetch('../extraIndicators.json')
+	fetch('/extraIndicators.json')
 	.then(response => response.json())
 	.then(indicators => {
 		let htmlIndExtra = "<select class='selectIndExtra' id='selectIndExtra'>";
@@ -249,7 +254,7 @@ export function eliminarIndicador() {
 
 export function reiniciarIndicadores() {
 	Filtros.bloquearFiltros();
-	fetch('../webServiceReiniciarIndicadores')
+	fetch('/webServiceReiniciarIndicadores')
 	.then(response => response.text())
 	.then(text => {
 		if (text == "Indicadores reiniciados") {
@@ -264,9 +269,11 @@ export function reiniciarIndicadores() {
 }
 
 export function descargarMapa() {
-	fetch('mapa.html', { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+	document.getElementById('popupCargandoMapa').style.display= 'block';
+	fetch('/mapa.html', { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
 	  	.then(res => res.blob())
 	  	.then(res => {
+			document.getElementById('popupCargandoMapa').style.display = 'none';
 			const aElement = document.createElement('a');
 			aElement.setAttribute('download', 'ODE_mapa');
 			const href = URL.createObjectURL(res);
@@ -278,7 +285,7 @@ export function descargarMapa() {
 };
 
 function cargarUbicaciones() {
-	fetch('../ubiMeteoTodas.json')
+	fetch('/ubiMeteoTodas.json')
 	.then(response => response.json())
 	.then(jsonLocations => {
 		ubicaciones = Object.keys(jsonLocations);

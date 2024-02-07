@@ -137,13 +137,29 @@ select {
 .popupAñadirIndicador, .popupEliminarIndicador {
 	display: none;
 	position: absolute;
-    	top: 50%;
-    	left: 50%;
-    	margin-top: -50px;
-    	margin-left: -50px;
+	top: 50%;
+	left: 50%;
+	margin-top: -50px;
+	margin-left: -50px;
 	border: 1px solid blue;
 	z-index: 9;
 	background-color: cornflowerblue;
+}
+
+.popupCargandoMapa {
+	display: none;
+	height: 100px;
+	width: 20%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -50px;
+	margin-left: -50px;
+	text-align: center;
+	line-height: 100px;
+	border: 1px solid blue;
+	z-index: 9;
+	background-color: white;
 }
 
 .selectIndExtra, .selectIndEliminar {
