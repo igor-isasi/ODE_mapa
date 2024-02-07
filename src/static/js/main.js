@@ -275,24 +275,16 @@ export function reiniciarIndicadores() {
 }
 
 export function descargarMapa() {
-	document.getElementById('popupCargandoMapa').style.display= 'block';
-	Filtros.bloquearFiltros();
-	Filtros.ocultarMapa();
-	fetch('/mapa.html', { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
-	  	.then(res => res.blob())
-	  	.then(res => {
-			document.getElementById('popupCargandoMapa').style.display = 'none';
-			Filtros.mostrarMapa();
-			Filtros.habilitarFiltros();
-			const aElement = document.createElement('a');
-			aElement.setAttribute('download', 'ODE_mapa');
-			const href = URL.createObjectURL(res);
-			aElement.href = href;
-			aElement.setAttribute('target', '_blank');
-			aElement.click();
-			URL.revokeObjectURL(href);
-		});
-};
+	const aElement = document.createElement('a');
+	aElement.setAttribute('download', 'ODE_mapa');
+	let mapa = document.getElementById('mapaIframe').srcdoc;
+	var mapaBlob = new Blob([mapa], {type: "text/plain"});
+	const href = URL.createObjectURL(mapaBlob);
+	aElement.href = href;
+	aElement.setAttribute('target', '_blank');
+	aElement.click();
+	URL.revokeObjectURL(href);
+}
 
 function cargarUbicaciones() {
 	fetch('/ubimeteotodas.json')
