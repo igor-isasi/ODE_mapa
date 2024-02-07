@@ -33,14 +33,14 @@ def index():
                 return jsonify(errores)
             return 'mapa cargado'
 
-@routes.route('/mapa.html/')
+@routes.route('/mapa.html')
 def mapa_html():
     mapaSesion = mapas[session.get('idFichero')]
     if mapaSesion != None:
         mapaSesion.mapa.save('templates/mapa.html')
     return render_template('mapa.html')
 
-@routes.route('/indicators.json/')
+@routes.route('/indicators.json')
 def indicators_json():
     idFichero = session.get('idFichero')
     rutaFichero = 'session_indicators/indicators' + str(idFichero) + '.json'
@@ -49,7 +49,7 @@ def indicators_json():
     else:
         return render_template('indicatorsBase.json')
 
-@routes.route('/extraIndicators.json/')
+@routes.route('/extraindicators.json')
 def extraIndicators_json():
     idFichero = session.get('idFichero')
     rutaFichero = 'session_indicators/extraIndicators' + str(idFichero) + '.json'
@@ -58,11 +58,11 @@ def extraIndicators_json():
     else:
         return render_template('extraIndicatorsBase.json')
     
-@routes.route('/ubiMeteoTodas.json/')
+@routes.route('/ubimeteotodas.json')
 def ubiMeteoTodas_json():
     return render_template('ubiMeteoTodas.json')
 
-@routes.route('/webServiceAñosInd/')
+@routes.route('/wsañosind')
 def getAñosInd():
     idFichero = session.get('idFichero')
     añosInd = indicadores.getAñosIndSesion(idFichero)
@@ -71,7 +71,7 @@ def getAñosInd():
     else:
         return 'ApiError'
 
-@routes.route('/webServiceAñadirIndicador', methods=['POST'])
+@routes.route('/wsañadirindicador', methods=['POST'])
 def añadirIndicador():
     if request.method == 'POST':
         dataJson = request.get_json()
@@ -87,7 +87,7 @@ def añadirIndicador():
         else:
             return 'ApiError'
     
-@routes.route('/webServiceEliminarIndicador', methods=['POST'])
+@routes.route('/wseliminarindicador', methods=['POST'])
 def eliminarIndicador():
     if request.method == 'POST':
         dataJson = request.get_json()
@@ -99,7 +99,7 @@ def eliminarIndicador():
         indicadores.eliminarIndicadorSesion(idFichero, indicatorId, tipoInd, nombreInd, descInd)
         return 'Indicador eliminado'
     
-@routes.route('/webServiceReiniciarIndicadores')
+@routes.route('/wsreiniciarindicadores')
 def reiniciarIndicadores():
     idFichero = session.get('idFichero')
     indicadores.reiniciarIndicadoresSesion(idFichero)

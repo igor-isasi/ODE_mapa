@@ -54,8 +54,15 @@ export function inicializarFiltros() {
 export function habilitarFiltros() {
 	Array.from(document.getElementById('filtros').getElementsByTagName('*')).forEach((element) => element.disabled = false);
 	Array.from(document.getElementById('popups').getElementsByTagName('*')).forEach((element) => element.disabled = false);
-	document.getElementById('loadingDiv').style.display = 'none';
 	document.getElementById('filtros').style.visibility = "visible";
+}
+
+export function habilitarMapa() {
+	document.getElementById('loadingDiv').style.display = 'none';
+	mostrarMapa();
+}
+
+export function mostrarMapa() {
 	document.getElementById('mapa').style.visibility = "visible";
 }
 
@@ -64,8 +71,15 @@ export function bloquearFiltros() {
 	ocultarPopupEliminarIndicador();
 	Array.from(document.getElementById('filtros').getElementsByTagName('*')).forEach((element) => element.disabled = true);
 	Array.from(document.getElementById('popups').getElementsByTagName('*')).forEach((element) => element.disabled = true);
-	document.getElementById('mapa').style.visibility = 'hidden';
+}
+
+export function bloquearMapa() {
+	ocultarMapa();
 	document.getElementById('loadingDiv').style.display = 'block';
+}
+
+export function ocultarMapa() {
+	document.getElementById('mapa').style.visibility = 'hidden';
 }
 
 export function reiniciarFiltros() {
