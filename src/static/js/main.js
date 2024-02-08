@@ -176,6 +176,7 @@ export function generarMapa() {
 					}
 				}
 			} else {
+				console.log(res);
 				alert("Ha ocurrido un error al cargar el mapa.");
 				location.reload();
 			}

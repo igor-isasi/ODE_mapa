@@ -66,7 +66,6 @@ class Mapa:
         return errores
 
     def __cargarGeoJson(self):
-        errorApi = False
         indicators = indicadores.cargarIndicadoresSesion(self.idFichero)
         for ind in indicators:
             jsonInd = apiInd.getIndicator(ind)
@@ -77,10 +76,8 @@ class Mapa:
                             for año in list(indMun['years'][0].keys()):
                                 municipio['properties']['indicator_' + str(ind) + '_' + año] = indMun['years'][0][año]
             else:
-                errorApi = True
-                break
-        return errorApi
-                
+                raise
+
     def cargarNuevoIndGeoJson(self, ind):
         jsonInd = apiInd.getIndicator(ind)
         errorApi = False

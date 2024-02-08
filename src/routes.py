@@ -5,12 +5,17 @@ import uuid, json, os
 
 routes = Blueprint('routes', __name__, template_folder='templates')
 mapas = {}
+erroresGeojson = []
 
 @routes.before_app_request
 def before_app_request():
     if session.get('idFichero') == None:
         session['idFichero'] = uuid.uuid4()
-        mapas[session.get('idFichero')] = Mapa(session.get('idFichero'))
+        try:
+            mapas[session.get('idFichero')] = Mapa(session.get('idFichero'))
+        except:
+            mapas[session.get('idFichero')] = None
+            erroresGeojson.append(session.get('idFichero'))
         session.permanent = True
 
 @routes.route('/', methods=['GET', 'POST'])
@@ -18,6 +23,8 @@ def index():
     if request.method == 'GET':
         return render_template('index.html')
     if request.method == 'POST':
+        if session.get('idFichero') in erroresGeojson:
+            return 'ErrorGeojson'
         dataForm = request.form
         tipoRequest = dataForm['tipoRequest']
         if tipoRequest == 'mapa':
