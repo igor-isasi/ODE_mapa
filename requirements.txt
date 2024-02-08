@@ -1,5 +1,4 @@
 flask
-python-memcached
 requests
 folium
 pandas
