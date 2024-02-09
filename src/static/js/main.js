@@ -200,6 +200,7 @@ function cargarIndicadoresExtra() {
 export function añadirIndicador() {
 	let indicator = document.getElementById('selectIndExtra').value;
 	if (indicator != "") {
+		document.getElementById("filtros").style.visibility = "hidden";
 		Filtros.reiniciarFiltros();
 		Filtros.bloquearFiltros();
 		Filtros.bloquearMapa();
@@ -213,7 +214,6 @@ export function añadirIndicador() {
 		}).then(res => res.text())
 		.then(text => {
 			if (text == "Indicador añadido") {
-				document.getElementById("filtros").style.visibility = "hidden";
 				cargarIndicadoresExtra();
 				cargarIndicadores_generarMapa();
 			} else {
@@ -230,6 +230,7 @@ export function añadirIndicador() {
 export function eliminarIndicador() {
 	let indicator = document.getElementById('selectIndEliminar').value;
 	if (indicator != "") {
+		document.getElementById("filtros").style.visibility = "hidden";
 		Filtros.reiniciarFiltros();
 		Filtros.bloquearFiltros();
 		Filtros.bloquearMapa();
@@ -243,7 +244,6 @@ export function eliminarIndicador() {
 		}).then(res => res.text())
 		.then((text) => {
 			if (text == "Indicador eliminado") {
-				document.getElementById("filtros").style.visibility = "hidden";
 				cargarIndicadoresExtra();
 				cargarIndicadores_generarMapa();
 			} else {
@@ -258,6 +258,7 @@ export function eliminarIndicador() {
 }
 
 export function reiniciarIndicadores() {
+	document.getElementById("filtros").style.visibility = "hidden";
 	Filtros.reiniciarFiltros();
 	Filtros.bloquearFiltros();
 	Filtros.bloquearMapa();
@@ -265,7 +266,6 @@ export function reiniciarIndicadores() {
 	.then(response => response.text())
 	.then(text => {
 		if (text == "Indicadores reiniciados") {
-			document.getElementById("filtros").style.visibility = "hidden";
 			cargarIndicadores_generarMapa();
 			cargarIndicadoresExtra();
 		} else {
