@@ -180,6 +180,19 @@ def cargarIndicadoresSesion(idFichero):
             indicators_raw = f.read()
         return json.loads(indicators_raw)
     
+def cargarIndicadoresTodos():
+    indicatorsBase = {}
+    extraIndicators = {}
+    with open('templates/indicatorsBase.json') as f:
+        indicatorsBase_raw = f.read()
+        indicatorsBase = json.loads(indicatorsBase_raw)
+    with open('templates/extraIndicatorsBase.json') as f:
+        extraIndicators_raw = f.read()
+        extraIndicators = json.loads(extraIndicators_raw)
+    indicators = {**indicatorsBase, **extraIndicators}
+    return indicators
+    
+    
 def añadirIndicadorSesion(idFichero, indId, indTipo, indName, descInd):
     rutaFichero = 'templates/session_indicators/indicators' + str(idFichero) + '.json'
     rutaFicheroExtra = 'templates/session_indicators/extraIndicators' + str(idFichero) + '.json'

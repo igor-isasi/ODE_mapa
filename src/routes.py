@@ -88,11 +88,7 @@ def añadirIndicador():
         descInd = bool(dataJson['ind'].split(':')[3])
         idFichero = session.get('idFichero')
         indicadores.añadirIndicadorSesion(idFichero, indicatorId, tipoInd, nombreInd, descInd)
-        errorApi = mapas[idFichero].cargarNuevoIndGeoJson(indicatorId)
-        if not errorApi:
-            return 'Indicador añadido'
-        else:
-            return 'ApiError'
+        return 'Indicador añadido'
     
 @routes.route('/wseliminarindicador', methods=['POST'])
 def eliminarIndicador():
