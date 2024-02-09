@@ -258,6 +258,7 @@ export function eliminarIndicador() {
 }
 
 export function reiniciarIndicadores() {
+	Filtros.reiniciarFiltros();
 	Filtros.bloquearFiltros();
 	Filtros.bloquearMapa();
 	fetch('/wsreiniciarindicadores')
