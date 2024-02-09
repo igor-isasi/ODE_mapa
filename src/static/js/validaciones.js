@@ -48,7 +48,7 @@ function validarFechaMeteoUbi(fecha) {
 		if (!fecha || Date.parse(fecha) > Date.parse(getFechaMaxMeteo()) || Date.parse(fecha) < Date.parse(getFechaActual())) {
 			validado = false;
 			mensaje = "\n - La fecha de la predicción metereológica por ubicación debe ser mayor o igual que la fecha " +
-				getFechaActual() + " y menor o igual que la fecha " + getFechaMaxMeteo() + ".";
+				getFechaEsp(getFechaActual()) + " y menor o igual que la fecha " + getFechaEsp(getFechaMaxMeteo()) + ".";
 		}
 	}
 	return [validado, mensaje];
