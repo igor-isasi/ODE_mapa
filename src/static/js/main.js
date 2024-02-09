@@ -234,7 +234,7 @@ export function eliminarIndicador() {
 		Filtros.bloquearFiltros();
 		Filtros.bloquearMapa();
 		let postData = {ind: indicator, tipoRequest: 'eliminarIndicador'};
-		fetch('/wseliminarIndicador', {
+		fetch('/wseliminarindicador', {
 			headers: {
 				"Content-Type": "application/json"
 			},
