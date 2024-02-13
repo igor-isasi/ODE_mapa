@@ -6,7 +6,7 @@ Los pasos para desplegar la aplicación de forma local son los siguientes:
   <li>Descargar el código.</li>
   <li>Situarse en el directorio raíz de la aplicación (ODE_mapa).</li>
   <li>Introducir el siguiente comando: <strong>docker compose up</strong>. Si el usuario no tiene los permisos necesarios será necesario utilizar el comando como administrador: <strong>sudo docker compose up</strong>.</li>
-  <li>Una vez se haya desplegado la aplicación correctamente esta estará disponible en la URL <strong>http://localhost</strong>.</li>
+  <li>Una vez se haya desplegado la aplicación correctamente esta estará disponible en la URL <strong>http://localhost/</strong>. Si la máquina en la que se despliega la aplicación tiene una IP pública y el puerto 80 abierto, la aplicación será accesible desde el exterior mediante su dirección IP (http://{dirección_IP}/).</li>
 </ol>
 
 <h3><strong>Importante!</strong> Para poder utilizar los filtros de meteorología hay que seguir los siguientes pasos:</h3>
